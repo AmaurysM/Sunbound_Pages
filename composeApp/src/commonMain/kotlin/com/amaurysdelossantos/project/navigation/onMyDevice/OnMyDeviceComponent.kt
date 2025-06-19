@@ -1,36 +1,18 @@
-package com.amaurysdelossantos.project.navigation.search
+package com.amaurysdelossantos.project.navigation.onMyDevice
 
-import com.amaurysdelossantos.project.navigation.finishedbooks.FinishedBooksComponent.FinishedBook
+import com.amaurysdelossantos.project.navigation.finishedbooks.FinishedBooksEvent
+import com.amaurysdelossantos.project.navigation.search.Book
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-//data class SearchResult(
-//    val id: String,
-//    val title: String,
-//    val subtitle: String = "",
-//    val type: SearchResultType
-//)
-//
-//enum class SearchResultType {
-//    BOOK, AUTHOR, TOPIC
-//}
-data class Book(
-    val id: String,
-    val title: String,
-    val author: String?,
-    val description: String = "",
-)
-class SearchComponent(
-    componentContext: ComponentContext
-): ComponentContext by componentContext {
+class OnMyDeviceComponent (
+    componentContext: ComponentContext,
+    private val onBack: () -> Unit
+) : ComponentContext by componentContext {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
@@ -51,6 +33,27 @@ class SearchComponent(
 
     private val _filteredBooks = MutableStateFlow(_allBooks)
     val filteredBooks: StateFlow<List<Book>> = _filteredBooks
+
+    fun onEvent(event: OnMyDeviceEvent) {
+        when (event) {
+            is OnMyDeviceEvent.SearchQueryChanged -> {
+                onSearchQueryChanged(event.query);
+            }
+
+            OnMyDeviceEvent.BackClicked -> {
+                onBack()
+            }
+
+            OnMyDeviceEvent.CancelSearch -> {
+                cancelSearch()
+            }
+        }
+    }
+
+    fun cancelSearch(){
+        _searchQuery.value = ""
+        _filteredBooks.value = _allBooks
+    }
 
     fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery

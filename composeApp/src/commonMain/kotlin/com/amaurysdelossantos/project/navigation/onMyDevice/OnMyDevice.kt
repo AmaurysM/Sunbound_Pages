@@ -1,4 +1,4 @@
-package com.amaurysdelossantos.project.navigation.search
+package com.amaurysdelossantos.project.navigation.onMyDevice
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -31,24 +31,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.amaurysdelossantos.project.navigation.finishedbooks.FinishedBooksEvent
+import com.amaurysdelossantos.project.navigation.search.Book
 import org.jetbrains.compose.resources.painterResource
 import sunboundpages.composeapp.generated.resources.Res
 import sunboundpages.composeapp.generated.resources.cancel
+import sunboundpages.composeapp.generated.resources.chevron_left
 import sunboundpages.composeapp.generated.resources.library
+import sunboundpages.composeapp.generated.resources.more_horiz
 import sunboundpages.composeapp.generated.resources.search
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Search(
-    component: SearchComponent,
+fun OnMyDevice(
+    component: OnMyDeviceComponent,
     innerPadding: PaddingValues = PaddingValues()
 ) {
-
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
-
-    // Subscribe to component state
-    // val searchResults by component.searchResults.subscribeAsState()
-    // val isLoading by component.isLoading.subscribeAsState()
     val searchQuery = component.searchQuery.collectAsState()
     val colorScheme = MaterialTheme.colorScheme
     val filteredBooks = component.filteredBooks.collectAsState()
@@ -60,6 +58,36 @@ fun Search(
             .padding(top = 12.dp),
         verticalArrangement = Arrangement.Top
     ) {
+
+        // Top Bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.chevron_left),
+                contentDescription = "Back button",
+                colorFilter = ColorFilter.tint(iconColor),
+                modifier = Modifier.clickable {
+                    component.onEvent(OnMyDeviceEvent.BackClicked)
+                }
+            )
+
+            Text(
+                text = "On My Device",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Image(
+                painter = painterResource(Res.drawable.more_horiz),
+                contentDescription = "Show More Button",
+                colorFilter = ColorFilter.tint(iconColor)
+            )
+        }
 
         TextField(
             value = searchQuery.value,
@@ -77,7 +105,10 @@ fun Search(
                 Image(
                     painter = painterResource(Res.drawable.cancel),
                     contentDescription = "Cancel Search",
-                    colorFilter = ColorFilter.tint(iconColor)
+                    colorFilter = ColorFilter.tint(iconColor),
+                    modifier = Modifier.clickable {
+                        component.onEvent(OnMyDeviceEvent.CancelSearch)
+                    }
                 )
             },
             shape = RoundedCornerShape(20.dp),
@@ -111,7 +142,6 @@ fun Search(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Finished Books List
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -149,6 +179,7 @@ fun Search(
 
     }
 }
+
 
 @Composable
 private fun SearchResultItem(

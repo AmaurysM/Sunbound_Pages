@@ -3,13 +3,13 @@ package com.amaurysdelossantos.project.navigation.finishedbooks
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FinishedBooksComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    private val onBack: () -> Unit
 ) : ComponentContext by componentContext {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -24,6 +24,22 @@ class FinishedBooksComponent(
     private val _filteredBooks = MutableStateFlow(_allBooks)
     val filteredBooks: StateFlow<List<FinishedBook>> = _filteredBooks
 
+    fun onEvent(event: FinishedBooksEvent) {
+        when (event) {
+            is FinishedBooksEvent.SearchQueryChanged -> {
+                onSearchQueryChanged(event.query);
+            }
+
+            FinishedBooksEvent.BackClicked -> {
+                onBack()
+            }
+
+            FinishedBooksEvent.CancelSearch -> {
+                cancelSearch()
+            }
+        }
+    }
+
     fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
         coroutineScope.launch {
@@ -36,6 +52,11 @@ class FinishedBooksComponent(
                 }
             }
         }
+    }
+
+    fun cancelSearch(){
+        _searchQuery.value = ""
+        _filteredBooks.value = _allBooks
     }
 
     data class FinishedBook(

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,13 +31,13 @@ import sunboundpages.composeapp.generated.resources.radar
 
 @Composable
 fun Downloads(
-    modifier: Modifier = Modifier,
-    component: DownloadsComponent
+    component: DownloadsComponent,
+    innerPadding: PaddingValues = PaddingValues()
 ) {
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
 
     Column(
-        modifier = modifier
+        modifier = Modifier.padding(innerPadding)
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)

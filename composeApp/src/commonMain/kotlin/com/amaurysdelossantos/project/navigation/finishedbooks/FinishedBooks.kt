@@ -3,13 +3,9 @@ package com.amaurysdelossantos.project.navigation.finishedbooks
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -21,20 +17,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import sunboundpages.composeapp.generated.resources.Res
 import sunboundpages.composeapp.generated.resources.cancel
 import sunboundpages.composeapp.generated.resources.chevron_left
-import sunboundpages.composeapp.generated.resources.chevron_right
 import sunboundpages.composeapp.generated.resources.library
 import sunboundpages.composeapp.generated.resources.more_horiz
 import sunboundpages.composeapp.generated.resources.search
 
 @Composable
 fun FinishedBooks(
-    modifier: Modifier = Modifier,
-    component: FinishedBooksComponent
+    component: FinishedBooksComponent,
+    innerPadding: PaddingValues = PaddingValues()
 ) {
 
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -42,7 +36,7 @@ fun FinishedBooks(
     val filteredBooks = component.filteredBooks.collectAsState()
 
     Column(
-        modifier = modifier
+        modifier = Modifier.padding(innerPadding)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
@@ -58,7 +52,10 @@ fun FinishedBooks(
             Image(
                 painter = painterResource(Res.drawable.chevron_left),
                 contentDescription = "Back button",
-                colorFilter = ColorFilter.tint(iconColor)
+                colorFilter = ColorFilter.tint(iconColor),
+                modifier = Modifier.clickable {
+                    component.onEvent(FinishedBooksEvent.BackClicked)
+                }
             )
 
             Text(
@@ -76,7 +73,9 @@ fun FinishedBooks(
 
         TextField(
             value = searchQuery.value,
-            onValueChange = { q -> component.onSearchQueryChanged(q) },
+            onValueChange = { q ->
+                component.onEvent(FinishedBooksEvent.SearchQueryChanged(q))
+            },
             placeholder = { Text("Search by book title") },
             singleLine = true,
             leadingIcon = {
@@ -90,7 +89,10 @@ fun FinishedBooks(
                 Image(
                     painter = painterResource(Res.drawable.cancel),
                     contentDescription = "Cancel Search",
-                    colorFilter = ColorFilter.tint(iconColor)
+                    colorFilter = ColorFilter.tint(iconColor),
+                    modifier = Modifier.clickable {
+                        component.onEvent(FinishedBooksEvent.CancelSearch)
+                    }
                 )
             },
             shape = RoundedCornerShape(20.dp),

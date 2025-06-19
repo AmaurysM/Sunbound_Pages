@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,20 +30,19 @@ import sunboundpages.composeapp.generated.resources.Res
 import sunboundpages.composeapp.generated.resources.chevron_right
 import sunboundpages.composeapp.generated.resources.database
 import sunboundpages.composeapp.generated.resources.folder
-import sunboundpages.composeapp.generated.resources.library
 import sunboundpages.composeapp.generated.resources.smartphone
 
 @Composable
 fun Library(
-    modifier: Modifier = Modifier,
-    component: LibraryComponent
+    component: LibraryComponent,
+    innerPadding: PaddingValues = PaddingValues()
 ) {
     val scrollState = rememberScrollState()
     val colorScheme = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
 
     Column(
-        modifier = modifier
+        modifier = Modifier.padding(innerPadding)
             .fillMaxSize()
             .verticalScroll(scrollState)
             .padding(16.dp),
@@ -54,7 +53,7 @@ fun Library(
             SettingsItem(
                 iconRes = Res.drawable.smartphone,
                 title = "On My Device",
-                onClick = { /* TODO: Navigate to device library */ }
+                onClick = { component.onEvent(LibraryEvent.OnMyDevice) }
             )
         }
 
@@ -63,12 +62,12 @@ fun Library(
             SettingsItem(
                 iconRes = Res.drawable.folder,
                 title = "Import from Files",
-                onClick = { /* TODO: Handle file import */ }
+                onClick = { component.onEvent(LibraryEvent.ImportFromFiles) }
             )
             SettingsItem(
                 iconRes = Res.drawable.database,
                 title = "Web Server",
-                onClick = { /* TODO: Handle web server import */ }
+                onClick = { component.onEvent(LibraryEvent.WebServer) }
             )
         }
     }
@@ -93,7 +92,6 @@ fun SettingsSection(content: @Composable ColumnScope.() -> Unit) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(vertical = 8.dp)
     ) {
         content()
     }

@@ -1,11 +1,13 @@
 package com.amaurysdelossantos.project.navigation
 
+import androidx.compose.runtime.Composable
 import com.amaurysdelossantos.project.navigation.bookInfo.BookInfoComponent
 import com.amaurysdelossantos.project.navigation.downloads.DownloadsComponent
 import com.amaurysdelossantos.project.navigation.library.LibraryComponent
 import com.amaurysdelossantos.project.navigation.readingNow.ReadingNowComponent
 import com.amaurysdelossantos.project.navigation.RootComponent.Child.*
 import com.amaurysdelossantos.project.navigation.finishedbooks.FinishedBooksComponent
+import com.amaurysdelossantos.project.navigation.onMyDevice.OnMyDeviceComponent
 import com.amaurysdelossantos.project.navigation.search.SearchComponent
 import com.amaurysdelossantos.project.navigation.settings.SettingsComponent
 import com.amaurysdelossantos.project.util.NavigationHolder.navigation
@@ -13,7 +15,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 
@@ -49,7 +51,12 @@ class RootComponent(
             )
 
             Configuration.Library -> Library(
-                LibraryComponent(context)
+                LibraryComponent(
+                    context,
+                    onMyDeviceButton = {
+                        navigation.bringToFront(Configuration.OnMyDevice)
+                    }
+                )
             )
 
             Configuration.Search -> Search(
@@ -65,11 +72,30 @@ class RootComponent(
             )
 
             is Configuration.BookInfo -> BookInfo(
-                BookInfoComponent(context, config.bookId),
+                BookInfoComponent(
+                    context,
+                    config.bookId,
+                    onBack = {
+                        navigation.pop()
+                    }
+                ),
             )
 
             Configuration.FinishedBooks -> FinishedBooks(
-                FinishedBooksComponent(context)
+                FinishedBooksComponent(context,
+                    onBack = {
+                        navigation.pop()
+                    }
+                )
+            )
+
+            Configuration.OnMyDevice -> OnMyDevice(
+                OnMyDeviceComponent(
+                    context,
+                    onBack = {
+                        navigation.pop()
+                    }
+                )
             )
         }
     }
@@ -88,6 +114,8 @@ class RootComponent(
         data class BookInfo(val component: BookInfoComponent) : Child()
 
         data class FinishedBooks(val component: FinishedBooksComponent) : Child()
+
+        data class OnMyDevice(val component: OnMyDeviceComponent) : Child()
     }
 
     @Serializable
@@ -113,6 +141,9 @@ class RootComponent(
 
         @Serializable
         data object FinishedBooks : Configuration
+
+        @Serializable
+        data object OnMyDevice : Configuration
     }
 }
 

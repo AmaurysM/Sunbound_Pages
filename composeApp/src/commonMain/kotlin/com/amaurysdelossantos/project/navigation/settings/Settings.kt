@@ -27,11 +27,11 @@ import sunboundpages.composeapp.generated.resources.translate
 
 @Composable
 fun Settings(
-    modifier: Modifier = Modifier,
-    component: SettingsComponent
+    component: SettingsComponent,
+    innerPadding: PaddingValues = PaddingValues()
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier.padding(innerPadding)
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(32.dp)

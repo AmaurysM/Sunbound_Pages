@@ -1,7 +1,6 @@
 package com.amaurysdelossantos.project
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
@@ -12,13 +11,13 @@ import com.amaurysdelossantos.project.navigation.bookInfo.BookInfo
 import com.amaurysdelossantos.project.navigation.downloads.Downloads
 import com.amaurysdelossantos.project.navigation.finishedbooks.FinishedBooks
 import com.amaurysdelossantos.project.navigation.library.Library
+import com.amaurysdelossantos.project.navigation.onMyDevice.OnMyDevice
 import com.amaurysdelossantos.project.navigation.readingNow.ReadingNow
 import com.amaurysdelossantos.project.navigation.search.Search
 import com.amaurysdelossantos.project.navigation.settings.Settings
 
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -36,7 +35,6 @@ fun App(root: RootComponent) {
             }
         ) { innerPadding ->
 
-
             Children(
                 stack = childStack,
                 animation = stackAnimation(fade())
@@ -44,37 +42,42 @@ fun App(root: RootComponent) {
                 when (val instance = child.instance) {
                     is RootComponent.Child.BookInfo -> BookInfo(
                         component = instance.component,
-                        modifier = Modifier.padding(innerPadding)
+                        innerPadding = innerPadding,
                     )
 
                     is RootComponent.Child.Downloads -> Downloads(
                         component = instance.component,
-                        modifier = Modifier.padding(innerPadding)
+                        innerPadding = innerPadding,
                     )
 
                     is RootComponent.Child.Library -> Library(
                         component = instance.component,
-                        modifier = Modifier.padding(innerPadding)
+                        innerPadding = innerPadding,
                     )
 
                     is RootComponent.Child.ReadingNow -> ReadingNow(
                         component = instance.component,
-                        modifier = Modifier.padding(innerPadding)
+                        innerPadding = innerPadding,
                     )
 
                     is RootComponent.Child.Search -> Search(
                         component = instance.component,
-                        modifier = Modifier.padding(innerPadding)
+                        innerPadding = innerPadding,
                     )
 
                     is RootComponent.Child.Settings -> Settings(
                         component = instance.component,
-                        modifier = Modifier.padding(innerPadding)
+                        innerPadding = innerPadding,
                     )
 
                     is RootComponent.Child.FinishedBooks -> FinishedBooks(
                         component = instance.component,
-                        modifier = Modifier.padding(innerPadding)
+                        innerPadding = innerPadding,
+                    )
+
+                    is RootComponent.Child.OnMyDevice -> OnMyDevice(
+                        component = instance.component,
+                        innerPadding = innerPadding,
                     )
                 }
             }

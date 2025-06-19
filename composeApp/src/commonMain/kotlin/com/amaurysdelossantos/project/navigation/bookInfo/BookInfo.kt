@@ -2,7 +2,7 @@ package com.amaurysdelossantos.project.navigation.bookInfo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,77 +13,123 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.amaurysdelossantos.project.navigation.onMyDevice.OnMyDeviceEvent
 import org.jetbrains.compose.resources.painterResource
 import sunboundpages.composeapp.generated.resources.Res
+import sunboundpages.composeapp.generated.resources.chevron_left
 import sunboundpages.composeapp.generated.resources.chevron_right
 import sunboundpages.composeapp.generated.resources.library
+import sunboundpages.composeapp.generated.resources.more_horiz
 
 @Composable
 fun BookInfo(
-    modifier: Modifier = Modifier,
-    component: BookInfoComponent
+    component: BookInfoComponent,
+    innerPadding: PaddingValues = PaddingValues()
 ) {
+
+    val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
+
+    val colorScheme = MaterialTheme.colorScheme
+
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
 
-        // Book Header Section
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primaryContainer)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(Res.drawable.library),
-                contentDescription = "Book cover",
-                modifier = Modifier
-                    .size(width = 120.dp, height = 180.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(MaterialTheme.colorScheme.onPrimary)
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = innerPadding.calculateTopPadding())
             ) {
-                Text(
-                    text = "Book Name",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "This is a short description of the book that should ideally wrap to two lines max.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Row(modifier = Modifier.horizontalScroll(rememberScrollState())
-                    ,horizontalArrangement = Arrangement.spacedBy(6.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    repeat(100) { i ->
+                    Image(
+                        painter = painterResource(Res.drawable.chevron_left),
+                        contentDescription = "Back button",
+                        colorFilter = ColorFilter.tint(iconColor),
+                        modifier = Modifier.clickable {
+                            component.onEvent(BookInfoEvent.BackClicked)
+                        }
+                    )
+
+                    Image(
+                        painter = painterResource(Res.drawable.more_horiz),
+                        contentDescription = "Show More Button",
+                        colorFilter = ColorFilter.tint(iconColor)
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(Res.drawable.library),
+                        contentDescription = "Book cover",
+                        modifier = Modifier
+                            .size(width = 120.dp, height = 180.dp)
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(MaterialTheme.colorScheme.onPrimary)
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.weight(1f)
+                    ) {
                         Text(
-                            text = "Tag $i",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    shape = RoundedCornerShape( 0.dp , 0.dp , 10.dp, 0.dp)
-                                )
-                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                            text = "Book Name",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.SemiBold
                         )
+                        Text(
+                            text = "This is a short description of the book that should ideally wrap to two lines max.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        Row(
+                            modifier = Modifier
+                                .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            repeat(100) { i ->
+                                Text(
+                                    text = "Tag $i",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier
+                                        .background(
+                                            color = MaterialTheme.colorScheme.onPrimary,
+                                            shape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 0.dp)
+                                        )
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
+
+
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -94,7 +140,11 @@ fun BookInfo(
             tonalElevation = 1.dp,
             modifier = Modifier.fillMaxSize()
         ) {
-            Column(modifier = Modifier.padding(top = 8.dp).verticalScroll(rememberScrollState())) {
+            Column(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
                 repeat(100) { index ->
                     ChapterItem(index = index, chapterName = "Chapter ${index + 1}")
                     Divider()
@@ -103,6 +153,7 @@ fun BookInfo(
         }
     }
 }
+
 
 @Composable
 private fun ChapterItem(index: Int, chapterName: String) {
