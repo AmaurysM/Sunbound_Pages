@@ -39,6 +39,8 @@ import sunboundpages.composeapp.generated.resources.chevron_left
 import sunboundpages.composeapp.generated.resources.library
 import sunboundpages.composeapp.generated.resources.more_horiz
 import sunboundpages.composeapp.generated.resources.search
+import androidx.compose.runtime.LaunchedEffect
+import com.amaurysdelossantos.project.util.rememberDocumentManager
 
 @Composable
 fun OnMyDevice(
@@ -50,6 +52,15 @@ fun OnMyDevice(
     val colorScheme = MaterialTheme.colorScheme
     val filteredBooks = component.filteredBooks.collectAsState()
 
+    val documentManager = rememberDocumentManager { sharedDoc ->
+        sharedDoc?.let {
+            component.handlePickedDocument(it)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        component.bindDocumentManager(documentManager)
+    }
 
     Column(
         modifier = Modifier.padding(innerPadding)

@@ -14,18 +14,18 @@ import kotlin.uuid.Uuid
 data class Book @OptIn(ExperimentalUuidApi::class) constructor(
     @PrimaryKey val id: String = Uuid.random().toString(),
     var title: String,
-    var author: String,
-    var descriptor: String,
-    var genre: String,
-    var language: String,
-    var publicationYear: Int?,
-    var publisher: String?,
-    var coverImageUrl: String?,
+    var author: String? = null,
+    var descriptor: String? = null,
+    var genre: String? = null,
+    var language: String? = null,
+    var publicationYear: Int? = null,
+    var publisher: String? = null,
+    var coverImageUrl: String? = null,
     var format: BookFormat,
     var mediaType: MediaType,
 
     // File information
-    var filePath: String? = null,
+    var filePath: String,
     var fileSize: Long? = null,
     var checksum: String? = null,
 

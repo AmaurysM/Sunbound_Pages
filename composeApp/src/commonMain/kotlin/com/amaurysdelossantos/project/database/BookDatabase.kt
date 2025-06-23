@@ -42,7 +42,7 @@ import com.amaurysdelossantos.project.model.WebtoonPanel
         BookTagCrossRef::class,
         SyncMetadata::class
     ],
-    version = 1,
+    version = 3,
     exportSchema = true
 )
 @ConstructedBy(AppDatabaseConstructor::class)
@@ -67,5 +67,4 @@ abstract class BookDatabase : RoomDatabase() {
 @Suppress("NO_ACTUAL_FOR_EXPECT")
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<BookDatabase> {
     override fun initialize(): BookDatabase
-
 }
