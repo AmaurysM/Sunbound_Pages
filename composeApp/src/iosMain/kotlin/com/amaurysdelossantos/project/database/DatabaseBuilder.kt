@@ -8,8 +8,8 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<BookDatabase> {
-    val dbFile = documentDirectory() + "/book.db"
-    return Room.databaseBuilder(name = dbFile)
+    val dbFile = documentDirectory() + "/sun.db"
+    return Room.databaseBuilder<BookDatabase>(name = dbFile)
 }
 
 @OptIn(ExperimentalForeignApi::class)

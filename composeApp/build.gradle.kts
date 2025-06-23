@@ -30,6 +30,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+
+            linkerOpts.add("-lsqlite3")
         }
     }
 
@@ -65,8 +67,9 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
+                implementation(libs.xerial.sqlite.jdbc)
 
-                implementation(libs.koin.android.v410)
+                // implementation(libs.koin.android.v410)
             }
         }
         val commonTest by getting {
@@ -80,7 +83,7 @@ kotlin {
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.kermit)
-
+                implementation(libs.koin.android.v410)
             }
         }
 
@@ -89,6 +92,7 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutinesSwing)
                 implementation(libs.kermit)
+                implementation(libs.xerial.sqlite.jdbc)
 
 
             }
@@ -144,19 +148,26 @@ android {
 //    schemaDirectory("$projectDir/schemas")
 //}
 dependencies {
+    //implementation(libs.androidx.room.runtime.jvm)
     debugImplementation(compose.uiTooling)
     //kapt(libs.room.compiler)
     ksp(libs.room.compiler)
-//    add("kspAndroid", libs.room.compiler)
-//    add("kspIosX64", libs.room.compiler)
-//    add("kspIosArm64", libs.room.compiler)
-//    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
+    add("kspDesktop", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
 }
 
+ksp {
+//    arg("room.incremental", "true")
+    arg("room.incremental", "true")
+    arg("room.expandProjection", "true")
+}
 
 compose.desktop {
     application {

@@ -42,7 +42,7 @@ actual class SharedDocument(private val contentResolver: ContentResolver, privat
         return if (name == null) {
             null
         }else {
-            GetBookFormat(name)
+            getBookFormat(name)
         }
     }
 

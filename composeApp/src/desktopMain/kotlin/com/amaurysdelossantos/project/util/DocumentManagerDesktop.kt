@@ -49,7 +49,7 @@ actual class SharedDocument(private val file: File) {
     }
 
     actual fun bookFormat(): BookFormat? {
-        return GetBookFormat(file.name)
+        return getBookFormat(file.name)
     }
 
     actual fun fileName(): String? {
