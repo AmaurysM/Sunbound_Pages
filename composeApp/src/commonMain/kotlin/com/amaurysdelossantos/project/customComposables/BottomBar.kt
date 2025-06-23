@@ -15,18 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.amaurysdelossantos.project.navigation.RootComponent.Child
 import com.amaurysdelossantos.project.navigation.RootComponent.Configuration
 import com.amaurysdelossantos.project.util.NavigationHolder.navigation
 import com.arkivanov.decompose.router.stack.bringToFront
-import com.arkivanov.decompose.router.stack.pushNew
-
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import sunboundpages.composeapp.generated.resources.Res
 import sunboundpages.composeapp.generated.resources.download
 import sunboundpages.composeapp.generated.resources.library
@@ -79,7 +75,9 @@ fun BottomBar(
 
                 Text(
                     text = item.label,
-                    color = if (isSelected) MaterialTheme.colorScheme.primary else contentColor.copy(alpha = 0.7f),
+                    color = if (isSelected) MaterialTheme.colorScheme.primary else contentColor.copy(
+                        alpha = 0.7f
+                    ),
                     style = MaterialTheme.typography.labelSmall
                 )
             }

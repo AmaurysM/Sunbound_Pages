@@ -4,5 +4,5 @@ import com.arkivanov.decompose.ComponentContext
 
 class DownloadsComponent(
     componentContext: ComponentContext
-): ComponentContext by componentContext {
+) : ComponentContext by componentContext {
 }

@@ -1,13 +1,8 @@
 package com.amaurysdelossantos.project.navigation.search
 
-import com.amaurysdelossantos.project.navigation.finishedbooks.FinishedBooksComponent.FinishedBook
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -28,9 +23,10 @@ data class Book(
     val author: String?,
     val description: String = "",
 )
+
 class SearchComponent(
     componentContext: ComponentContext
-): ComponentContext by componentContext {
+) : ComponentContext by componentContext {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 

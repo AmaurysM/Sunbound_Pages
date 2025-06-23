@@ -13,7 +13,7 @@ actual val world: String
 actual fun PlatformFunction() {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        while(true){
+        while (true) {
             Toast.makeText(context, "This is a marquee", Toast.LENGTH_SHORT).show()
             delay(2000)
             Toast.makeText(context, "For democracy", Toast.LENGTH_SHORT).show()

@@ -5,7 +5,7 @@ import com.arkivanov.decompose.ComponentContext
 class LibraryComponent(
     componentContext: ComponentContext,
     private val onMyDeviceButton: () -> Unit
-): ComponentContext by componentContext {
+) : ComponentContext by componentContext {
 
     fun onEvent(event: LibraryEvent) {
         when (event) {
@@ -13,6 +13,7 @@ class LibraryComponent(
             LibraryEvent.OnMyDevice -> {
                 onMyDeviceButton()
             }
+
             LibraryEvent.WebServer -> TODO()
         }
     }

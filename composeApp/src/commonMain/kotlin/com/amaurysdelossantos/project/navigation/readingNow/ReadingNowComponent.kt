@@ -6,10 +6,10 @@ class ReadingNowComponent(
     componentContext: ComponentContext,
     private val onBookClicked: (String) -> Unit,
     private val onSeeMore: () -> Unit
-): ComponentContext by componentContext {
+) : ComponentContext by componentContext {
 
-    fun onEvent(event: ReadingNowEvent){
-        when(event) {
+    fun onEvent(event: ReadingNowEvent) {
+        when (event) {
             is ReadingNowEvent.ClickBook -> onBookClicked(event.bookId)
             ReadingNowEvent.SeeAllFinished -> onSeeMore()
         }

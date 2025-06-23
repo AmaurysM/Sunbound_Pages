@@ -31,8 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.amaurysdelossantos.project.navigation.finishedbooks.FinishedBooksEvent
-import com.amaurysdelossantos.project.navigation.search.Book
+import com.amaurysdelossantos.project.model.Book
 import org.jetbrains.compose.resources.painterResource
 import sunboundpages.composeapp.generated.resources.Res
 import sunboundpages.composeapp.generated.resources.cancel
@@ -44,13 +43,13 @@ import sunboundpages.composeapp.generated.resources.search
 @Composable
 fun OnMyDevice(
     component: OnMyDeviceComponent,
-    innerPadding: PaddingValues = PaddingValues()
+    innerPadding: PaddingValues = PaddingValues(),
 ) {
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
     val searchQuery = component.searchQuery.collectAsState()
     val colorScheme = MaterialTheme.colorScheme
     val filteredBooks = component.filteredBooks.collectAsState()
-    // iOS-style background
+
 
     Column(
         modifier = Modifier.padding(innerPadding)
@@ -150,15 +149,36 @@ fun OnMyDevice(
         ) {
             if (filteredBooks.value.isEmpty()) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        "No books found",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            "No books found",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(MaterialTheme.colorScheme.primary)
+                                .clickable { component.onEvent(OnMyDeviceEvent.OpenFileExplorer) }
+                                .padding(horizontal = 24.dp, vertical = 12.dp)
+                        ) {
+                            Text(
+                                "Import from Files",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    }
                 }
+
             } else {
 
                 LazyVerticalGrid(

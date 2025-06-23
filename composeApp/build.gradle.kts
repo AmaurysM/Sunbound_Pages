@@ -1,30 +1,27 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    //alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
-    //id("app.cash.sqldelight") version "2.0.2"
-
-
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
+    jvmToolchain(17) // or 21 for more modern API access
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -35,29 +32,16 @@ kotlin {
             isStatic = true
         }
     }
-    
-    jvm("desktop")
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        moduleName = "composeApp"
-        browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(rootDirPath)
-                        add(projectDirPath)
-                    }
-                }
-            }
+
+    jvm("desktop") {
+        compilations.all {
+            kotlinOptions.jvmTarget = "17"
         }
-        binaries.executable()
     }
 
+    sourceSets.all {
+        languageSettings.optIn("kotlin.ExperimentalMultiplatform")
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -67,15 +51,22 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
-//                implementation(libs.androidx.lifecycle.viewmodel)
-//                implementation(libs.androidx.lifecycle.runtimeCompose)
+
                 implementation(libs.kermit)
                 implementation(libs.decompose)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.decompose.extensionsComposeJetbrains)
-                //implementation("org.jetbrains.compose.resources:resources:1.5.10")
-                //implementation("app.cash.sqldelight:sqlite-driver:2.0.2")
 
+                implementation(libs.room.runtime)
+                implementation(libs.sqlite.bundled)
+                implementation(libs.java.uuid.generator)
+                implementation(libs.kotlinx.datetime)
+
+                implementation(libs.koin.core)
+                implementation(libs.koin.compose)
+                implementation(libs.koin.compose.viewmodel)
+
+                implementation(libs.koin.android.v410)
             }
         }
         val commonTest by getting {
@@ -89,8 +80,7 @@ kotlin {
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.kermit)
-                implementation(libs.room.runtime)
-                implementation(libs.sqlite.bundled)
+
             }
         }
 
@@ -99,8 +89,7 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutinesSwing)
                 implementation(libs.kermit)
-                implementation(libs.room.runtime)
-                implementation(libs.sqlite.bundled)
+
 
             }
         }
@@ -113,42 +102,16 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
-            dependencies{
-                implementation(libs.room.runtime)
-                implementation(libs.sqlite.bundled)
+            dependencies {
+
             }
 
 
         }
 
-        val wasmJsMain by getting
     }
-    
-//    sourceSets {
-//        val desktopMain by getting
-//
-//        androidMain.dependencies {
-//            implementation(compose.preview)
-//            implementation(libs.androidx.activity.compose)
-//        }
-//        commonMain.dependencies {
-//            implementation(compose.runtime)
-//            implementation(compose.foundation)
-//            implementation(compose.material3)
-//            implementation(compose.ui)
-//            implementation(compose.components.resources)
-//            implementation(compose.components.uiToolingPreview)
-//            implementation(libs.androidx.lifecycle.viewmodel)
-//            implementation(libs.androidx.lifecycle.runtimeCompose)
-//        }
-//        commonTest.dependencies {
-//            implementation(libs.kotlin.test)
-//        }
-//        desktopMain.dependencies {
-//            implementation(compose.desktop.currentOs)
-//            implementation(libs.kotlinx.coroutinesSwing)
-//        }
-//    }
+
+
 }
 
 android {
@@ -173,8 +136,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 //room {
@@ -182,9 +145,18 @@ android {
 //}
 dependencies {
     debugImplementation(compose.uiTooling)
-    //ksp(libs.room.compiler)
-
+    //kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
+//    add("kspAndroid", libs.room.compiler)
+//    add("kspIosX64", libs.room.compiler)
+//    add("kspIosArm64", libs.room.compiler)
+//    add("kspIosSimulatorArm64", libs.room.compiler)
 }
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 
 compose.desktop {
     application {

@@ -3,11 +3,24 @@ package com.amaurysdelossantos.project.navigation.finishedbooks
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -17,12 +30,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.amaurysdelossantos.project.customComposables.BookItem
 import org.jetbrains.compose.resources.painterResource
 import sunboundpages.composeapp.generated.resources.Res
 import sunboundpages.composeapp.generated.resources.cancel
 import sunboundpages.composeapp.generated.resources.chevron_left
-import sunboundpages.composeapp.generated.resources.library
 import sunboundpages.composeapp.generated.resources.more_horiz
+import sunboundpages.composeapp.generated.resources.sample_book_cover
 import sunboundpages.composeapp.generated.resources.search
 
 @Composable
@@ -146,7 +160,11 @@ fun FinishedBooks(
                 }
             } else {
                 filteredBooks.value.forEach { book ->
-                    FinishedBookItem(title = book.title, description = book.description)
+                    FinishedBookItem(title = book.title, description = book.description, onClick = {
+                        component.onEvent(
+                            FinishedBooksEvent.ClickBook("0")
+                        )
+                    })
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -158,6 +176,7 @@ fun FinishedBooks(
 fun FinishedBookItem(
     title: String,
     description: String,
+    onClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -167,14 +186,11 @@ fun FinishedBookItem(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(Res.drawable.library),
-            contentDescription = "Book cover",
-            modifier = Modifier
-                .height(120.dp)
-                .width(80.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+        BookItem(
+            painter = painterResource(Res.drawable.sample_book_cover),
+            title = "",
+            size = 80.dp,
+            onClick = { onClick }
         )
 
         Spacer(modifier = Modifier.width(12.dp))

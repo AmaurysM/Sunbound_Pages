@@ -37,9 +37,12 @@ fun Library(
     component: LibraryComponent,
     innerPadding: PaddingValues = PaddingValues()
 ) {
+    //val books by bookDao.getAllBooks().collectAsState(initial = emptyList())
     val scrollState = rememberScrollState()
     val colorScheme = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
+
+    //val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier.padding(innerPadding)
@@ -99,7 +102,7 @@ fun SettingsSection(content: @Composable ColumnScope.() -> Unit) {
 
 @Composable
 fun SettingsItem(
-    iconRes:  DrawableResource,
+    iconRes: DrawableResource,
     title: String,
     onClick: () -> Unit
 ) {

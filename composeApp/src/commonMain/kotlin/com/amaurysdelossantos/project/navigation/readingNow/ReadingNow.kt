@@ -1,20 +1,16 @@
 package com.amaurysdelossantos.project.navigation.readingNow
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.amaurysdelossantos.project.customComposables.BookItem
+import org.jetbrains.compose.resources.painterResource
+import sunboundpages.composeapp.generated.resources.Res
+import sunboundpages.composeapp.generated.resources.sample_book_cover
 
 @Composable
 fun ReadingNow(
@@ -64,14 +64,11 @@ fun ReadingNow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 repeat(5) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(150.dp)
-                            .background(colorScheme.primaryContainer, shape = MaterialTheme.shapes.medium)
-                            .clickable {
-                                component.onEvent(ReadingNowEvent.ClickBook("0"))
-                            }
+                    BookItem(
+                        painter = painterResource(Res.drawable.sample_book_cover),
+                        title = "Book Title",
+                        size = 150.dp,
+                        onClick = { component.onEvent(ReadingNowEvent.ClickBook("0")) }
                     )
                 }
             }
@@ -101,14 +98,11 @@ fun ReadingNow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 repeat(5) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(80.dp)
-                            .background(colorScheme.secondaryContainer, shape = MaterialTheme.shapes.medium)
-                            .clickable {
-                                component.onEvent(ReadingNowEvent.ClickBook("0"))
-                            }
+                    BookItem(
+                        painter = painterResource(Res.drawable.sample_book_cover),
+                        title = "",
+                        size = 80.dp,
+                        onClick = { component.onEvent(ReadingNowEvent.ClickBook("0")) }
                     )
                 }
             }
@@ -155,14 +149,11 @@ fun ReadingNow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 repeat(5) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(80.dp)
-                            .background(colorScheme.tertiaryContainer, shape = MaterialTheme.shapes.medium)
-                            .clickable {
-                                component.onEvent(ReadingNowEvent.ClickBook("0"))
-                            }
+                    BookItem(
+                        painter = painterResource(Res.drawable.sample_book_cover),
+                        title = "",
+                        size = 80.dp,
+                        onClick = { component.onEvent(ReadingNowEvent.ClickBook("0")) }
                     )
                 }
             }

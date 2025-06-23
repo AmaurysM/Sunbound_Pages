@@ -1,15 +1,16 @@
 package com.amaurysdelossantos.project.navigation.finishedbooks
 
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class FinishedBooksComponent(
     componentContext: ComponentContext,
-    private val onBack: () -> Unit
+    private val onBack: () -> Unit,
+    private val onBookClicked: (String) -> Unit,
 ) : ComponentContext by componentContext {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -37,6 +38,8 @@ class FinishedBooksComponent(
             FinishedBooksEvent.CancelSearch -> {
                 cancelSearch()
             }
+
+            is FinishedBooksEvent.ClickBook -> onBookClicked(event.bookId)
         }
     }
 
@@ -54,7 +57,7 @@ class FinishedBooksComponent(
         }
     }
 
-    fun cancelSearch(){
+    fun cancelSearch() {
         _searchQuery.value = ""
         _filteredBooks.value = _allBooks
     }

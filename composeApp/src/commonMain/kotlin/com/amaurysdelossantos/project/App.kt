@@ -3,7 +3,8 @@ package com.amaurysdelossantos.project
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.amaurysdelossantos.project.customComposables.BottomBar
 import com.amaurysdelossantos.project.navigation.RootComponent
@@ -15,7 +16,6 @@ import com.amaurysdelossantos.project.navigation.onMyDevice.OnMyDevice
 import com.amaurysdelossantos.project.navigation.readingNow.ReadingNow
 import com.amaurysdelossantos.project.navigation.search.Search
 import com.amaurysdelossantos.project.navigation.settings.Settings
-
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
