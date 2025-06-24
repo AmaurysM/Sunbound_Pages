@@ -1,7 +1,6 @@
 package com.amaurysdelossantos.project.util
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 actual class PermissionsManager actual constructor(

@@ -42,7 +42,7 @@ class RootComponent(
             childFactory = ::createChild
         )
 
-    private val bookDao = inject<BookDatabase>().value.bookDao()
+    //private val bookDao = inject<BookDatabase>().value.bookDao()
 
 
     private fun createChild(
@@ -58,7 +58,8 @@ class RootComponent(
                     },
                     onSeeMore = {
                         navigation.bringToFront(Configuration.FinishedBooks)
-                    }
+                    },
+                    bookDao = inject<BookDatabase>().value.bookDao()
                 )
             )
 
@@ -67,7 +68,8 @@ class RootComponent(
                     context,
                     onMyDeviceButton = {
                         navigation.bringToFront(Configuration.OnMyDevice)
-                    }
+                    },
+                    bookDao = inject<BookDatabase>().value.bookDao()
                 )
             )
 
@@ -96,6 +98,7 @@ class RootComponent(
             Configuration.FinishedBooks -> FinishedBooks(
                 FinishedBooksComponent(
                     context,
+                    inject<BookDatabase>().value.bookDao(),
                     onBack = {
                         navigation.pop()
                     },
@@ -112,7 +115,7 @@ class RootComponent(
                         onBack = {
                             navigation.pop()
                         },
-                        bookDao
+                        inject<BookDatabase>().value.bookDao()
                     )
                 )
             }

@@ -18,12 +18,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.amaurysdelossantos.project.util.rememberDocumentManager
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import sunboundpages.composeapp.generated.resources.Res
@@ -41,8 +44,19 @@ fun Library(
     val scrollState = rememberScrollState()
     val colorScheme = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
+    val books = component.allBooks.collectAsState(initial = emptyList())
 
     //val scope = rememberCoroutineScope()
+
+    val documentManager = rememberDocumentManager { sharedDoc ->
+        sharedDoc?.let {
+            component.handlePickedDocument(it)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        component.bindDocumentManager(documentManager)
+    }
 
     Column(
         modifier = Modifier.padding(innerPadding)
@@ -51,13 +65,16 @@ fun Library(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        SectionTitle("Libraries")
-        SettingsSection {
-            SettingsItem(
-                iconRes = Res.drawable.smartphone,
-                title = "On My Device",
-                onClick = { component.onEvent(LibraryEvent.OnMyDevice) }
-            )
+
+        if (!books.value.isEmpty()) {
+            SectionTitle("Library")
+            SettingsSection {
+                SettingsItem(
+                    iconRes = Res.drawable.smartphone,
+                    title = "On My Device",
+                    onClick = { component.onEvent(LibraryEvent.OnMyDevice) }
+                )
+            }
         }
 
         SectionTitle("Import Services")

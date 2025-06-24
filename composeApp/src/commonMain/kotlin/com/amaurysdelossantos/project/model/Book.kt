@@ -15,7 +15,7 @@ data class Book @OptIn(ExperimentalUuidApi::class) constructor(
     @PrimaryKey val id: String = Uuid.random().toString(),
     var title: String,
     var author: String? = null,
-    var descriptor: String? = null,
+    var description: String? = null,
     var genre: String? = null,
     var language: String? = null,
     var publicationYear: Int? = null,

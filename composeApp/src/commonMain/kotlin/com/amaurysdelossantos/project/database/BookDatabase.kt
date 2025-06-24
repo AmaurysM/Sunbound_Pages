@@ -42,7 +42,7 @@ import com.amaurysdelossantos.project.model.WebtoonPanel
         BookTagCrossRef::class,
         SyncMetadata::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 @ConstructedBy(AppDatabaseConstructor::class)

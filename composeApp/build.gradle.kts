@@ -69,6 +69,9 @@ kotlin {
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.xerial.sqlite.jdbc)
 
+                implementation(libs.kamel.image)
+
+
                 // implementation(libs.koin.android.v410)
             }
         }

@@ -1,7 +1,6 @@
 package com.amaurysdelossantos.project.customComposables
 
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,15 +14,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.amaurysdelossantos.project.model.Book
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 
 @Composable
 fun BookItem(
-    painter: Painter?,
-    title: String = " ",
+    book: Book,
     size: Dp = 150.dp,
     onClick: () -> Unit = {}
 ) {
@@ -34,48 +36,72 @@ fun BookItem(
         modifier = Modifier
             .width(width)
             .height(height)
-            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
+            .background(
+                MaterialTheme.colorScheme.surfaceVariant,
+                MaterialTheme.shapes.medium
+            )
             .clickable { onClick() }
     ) {
-        // Image or blank fallback
-        if (painter != null) {
-            Image(
-                painter = painter,
-                contentDescription = title,
+        if (!book.coverImageUrl.isNullOrEmpty()) {
+            val painterResource = asyncPainterResource(book.coverImageUrl!!)
+
+            KamelImage(
+                resource = painterResource,
+                contentDescription = book.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                onFailure = {
+                    // Optional fallback if image fails
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Load Failed",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                },
+                onLoading = {
+                    // Optional loading UI
+                }
             )
         } else {
+            // Placeholder when no cover image is available
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface)
-            )
+                    .background(MaterialTheme.colorScheme.surface),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No Cover",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
         }
 
-        // Gradient or overlay if needed for text legibility (optional)
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.1f)) // optional overlay
-//        )
-
-        // Text at the bottom over the image
+        // Title overlay at the bottom
         Box(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
                 .background(
-                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f),
-                    MaterialTheme.shapes.medium
+                    Color.Black.copy(alpha = 0.7f),
+                    MaterialTheme.shapes.small
                 )
-                .padding(6.dp)
+                .padding(8.dp)
         ) {
             Text(
-                text = title,
+                text = book.title,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 2
+                color = Color.White,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

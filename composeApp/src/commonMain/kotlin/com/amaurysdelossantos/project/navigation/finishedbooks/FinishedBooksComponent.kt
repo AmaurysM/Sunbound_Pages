@@ -1,70 +1,57 @@
 package com.amaurysdelossantos.project.navigation.finishedbooks
 
+import com.amaurysdelossantos.project.database.dao.BookDao
+import com.amaurysdelossantos.project.model.Book
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 
 class FinishedBooksComponent(
     componentContext: ComponentContext,
+    private val bookDao: BookDao,
     private val onBack: () -> Unit,
     private val onBookClicked: (String) -> Unit,
-) : ComponentContext by componentContext {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    ) : ComponentContext by componentContext {
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
-    private val _allBooks = List(20) { index ->
-        FinishedBook("Book Title $index", "Description for Book $index")
-    }
+    val allBooks: Flow<List<Book>> = bookDao.getAllBooks()
 
-    private val _filteredBooks = MutableStateFlow(_allBooks)
-    val filteredBooks: StateFlow<List<FinishedBook>> = _filteredBooks
+    val filteredBooks: Flow<List<Book>> = combine(
+        allBooks,
+        searchQuery
+    ) { books, query ->
+        if (query.isBlank()) {
+            books
+        } else {
+            books.filter {
+                it.title.contains(query, ignoreCase = true) ||
+                        it.description?.contains(query, ignoreCase = true) == true
+            }
+        }
+    }.flowOn(Dispatchers.Default)
 
     fun onEvent(event: FinishedBooksEvent) {
         when (event) {
-            is FinishedBooksEvent.SearchQueryChanged -> {
-                onSearchQueryChanged(event.query);
-            }
-
-            FinishedBooksEvent.BackClicked -> {
-                onBack()
-            }
-
-            FinishedBooksEvent.CancelSearch -> {
-                cancelSearch()
-            }
-
+            is FinishedBooksEvent.SearchQueryChanged -> onSearchQueryChanged(event.query)
+            FinishedBooksEvent.BackClicked -> onBack()
+            FinishedBooksEvent.CancelSearch -> cancelSearch()
             is FinishedBooksEvent.ClickBook -> onBookClicked(event.bookId)
         }
     }
 
-    fun onSearchQueryChanged(newQuery: String) {
+    private fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
-        coroutineScope.launch {
-            _filteredBooks.value = if (newQuery.isBlank()) {
-                _allBooks
-            } else {
-                _allBooks.filter {
-                    it.title.contains(newQuery, ignoreCase = true) ||
-                            it.description.contains(newQuery, ignoreCase = true)
-                }
-            }
-        }
     }
 
-    fun cancelSearch() {
+    private fun cancelSearch() {
         _searchQuery.value = ""
-        _filteredBooks.value = _allBooks
     }
 
-    data class FinishedBook(
-        val title: String,
-        val description: String,
-        val progress: Float = 1f
-    )
 }

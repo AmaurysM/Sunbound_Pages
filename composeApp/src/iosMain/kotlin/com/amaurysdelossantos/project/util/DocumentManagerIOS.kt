@@ -5,16 +5,16 @@ import androidx.compose.runtime.remember
 import com.amaurysdelossantos.project.database.enums.BookFormat
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.get
 import kotlinx.cinterop.reinterpret
 import platform.Foundation.NSData
 import platform.Foundation.NSURL
 import platform.Foundation.dataWithContentsOfURL
+import platform.UIKit.UIApplication
+import platform.UIKit.UIDocumentPickerDelegateProtocol
 import platform.UIKit.UIDocumentPickerMode
 import platform.UIKit.UIDocumentPickerViewController
-import platform.UIKit.UIDocumentPickerDelegateProtocol
-import platform.UIKit.UIApplication
 import platform.darwin.NSObject
-import kotlinx.cinterop.get
 
 
 @Composable
@@ -25,7 +25,10 @@ actual fun rememberDocumentManager(onResult: (SharedDocument?) -> Unit): Documen
     )
     val documentDelegate = remember {
         object : NSObject(), UIDocumentPickerDelegateProtocol {
-            override fun documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL: NSURL) {
+            override fun documentPicker(
+                controller: UIDocumentPickerViewController,
+                didPickDocumentAtURL: NSURL
+            ) {
                 didPickDocumentAtURL.startAccessingSecurityScopedResource()
                 val data = NSData.dataWithContentsOfURL(didPickDocumentAtURL)
                 didPickDocumentAtURL.stopAccessingSecurityScopedResource()
@@ -38,7 +41,11 @@ actual fun rememberDocumentManager(onResult: (SharedDocument?) -> Unit): Documen
     return remember {
         DocumentManager {
             documentPicker.setDelegate(documentDelegate)
-            UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(documentPicker, true, null)
+            UIApplication.sharedApplication.keyWindow?.rootViewController?.presentViewController(
+                documentPicker,
+                true,
+                null
+            )
         }
     }
 }
@@ -63,7 +70,7 @@ actual class SharedDocument(private val data: NSData?) {
         val name = fileName()?.lowercase()
         return if (name == null) {
             null
-        }else {
+        } else {
             getBookFormat(name)
         }
     }

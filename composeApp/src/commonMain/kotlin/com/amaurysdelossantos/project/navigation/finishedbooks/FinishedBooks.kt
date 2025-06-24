@@ -31,12 +31,12 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.amaurysdelossantos.project.customComposables.BookItem
+import com.amaurysdelossantos.project.model.Book
 import org.jetbrains.compose.resources.painterResource
 import sunboundpages.composeapp.generated.resources.Res
 import sunboundpages.composeapp.generated.resources.cancel
 import sunboundpages.composeapp.generated.resources.chevron_left
 import sunboundpages.composeapp.generated.resources.more_horiz
-import sunboundpages.composeapp.generated.resources.sample_book_cover
 import sunboundpages.composeapp.generated.resources.search
 
 @Composable
@@ -47,7 +47,7 @@ fun FinishedBooks(
 
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
     val searchQuery = component.searchQuery.collectAsState()
-    val filteredBooks = component.filteredBooks.collectAsState()
+    val filteredBooks = component.filteredBooks.collectAsState(emptyList())
 
     Column(
         modifier = Modifier.padding(innerPadding)
@@ -160,7 +160,7 @@ fun FinishedBooks(
                 }
             } else {
                 filteredBooks.value.forEach { book ->
-                    FinishedBookItem(title = book.title, description = book.description, onClick = {
+                    FinishedBookItem(book = book, onClick = {
                         component.onEvent(
                             FinishedBooksEvent.ClickBook("0")
                         )
@@ -174,8 +174,7 @@ fun FinishedBooks(
 
 @Composable
 fun FinishedBookItem(
-    title: String,
-    description: String,
+    book: Book,
     onClick: (String) -> Unit
 ) {
     Row(
@@ -187,9 +186,7 @@ fun FinishedBookItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         BookItem(
-            painter = painterResource(Res.drawable.sample_book_cover),
-            title = "",
-            size = 80.dp,
+            book = book,
             onClick = { onClick }
         )
 
@@ -197,12 +194,12 @@ fun FinishedBookItem(
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = title,
+                text = book.title,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = description,
+                text = book.description.toString(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

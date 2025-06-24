@@ -41,7 +41,7 @@ actual class SharedDocument(private val contentResolver: ContentResolver, privat
         val name = fileName()?.lowercase()
         return if (name == null) {
             null
-        }else {
+        } else {
             getBookFormat(name)
         }
     }

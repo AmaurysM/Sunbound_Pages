@@ -98,4 +98,15 @@ interface BookDao {
 
     @Query("SELECT mediaType, COUNT(*) as count FROM books WHERE isDeleted = 0 GROUP BY mediaType")
     fun getBookCountsByMediaType(): Flow<List<MediaTypeCount>>
+
+    @Query("SELECT * FROM books WHERE readingStatus = 'READING'")
+    fun getCurrentlyReadingBooks(): Flow<List<Book>>
+
+    @Query("SELECT * FROM books WHERE readingStatus = 'READING' ORDER BY updatedAt DESC")
+    fun getRecentlyOpenedBooks(): Flow<List<Book>>
+
+    @Query("SELECT * FROM books WHERE readingStatus = 'COMPLETED'")
+    fun getFinishedBooks(): Flow<List<Book>>
+
+
 }

@@ -14,6 +14,7 @@ androidx-constraintlayout = "2.2.1"
 androidx-test-junit = "1.2.1"
 androidx-espresso-core = "3.6.1"
 javaUuidGenerator = "5.1.0"
+kamelImage = "0.7.0"
 koinAndroid = "4.1.0"
 kotlin = "2.1.21"
 junit = "4.13.2"
@@ -35,6 +36,7 @@ sqliteJdbcVersion = "3.43.0.0"
 [libraries]
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "extensionsComposeJetbrains" }
 java-uuid-generator = { module = "com.fasterxml.uuid:java-uuid-generator", version.ref = "javaUuidGenerator" }
+kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
 koin-android-v410 = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }

@@ -1,7 +1,8 @@
 package com.amaurysdelossantos.project.navigation.onMyDevice
 
+import co.touchlab.kermit.Logger
+import co.touchlab.kermit.StaticConfig
 import com.amaurysdelossantos.project.database.dao.BookDao
-import com.amaurysdelossantos.project.database.enums.MediaType
 import com.amaurysdelossantos.project.model.Book
 import com.amaurysdelossantos.project.util.DocumentManager
 import com.amaurysdelossantos.project.util.SharedDocument
@@ -15,9 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import co.touchlab.kermit.Logger
-import co.touchlab.kermit.Severity
-import co.touchlab.kermit.StaticConfig
 
 class OnMyDeviceComponent(
     componentContext: ComponentContext,
@@ -29,6 +27,9 @@ class OnMyDeviceComponent(
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     private lateinit var documentManager: DocumentManager
 
@@ -42,10 +43,16 @@ class OnMyDeviceComponent(
         bookDao.getAllBooks(),
         _searchQuery
     ) { books, query ->
-        if (query.isBlank()) books
-        else books.filter {
-            it.title.contains(query, ignoreCase = true) ||
-                    it.descriptor?.contains(query, ignoreCase = true) == true
+        // Update loading state when books are loaded
+        _isLoading.value = false
+
+        if (query.isBlank()) {
+            books
+        } else {
+            books.filter {
+                it.title.contains(query, ignoreCase = true) ||
+                        it.description?.contains(query, ignoreCase = true) == true
+            }
         }
     }.stateIn(
         coroutineScope,
@@ -56,7 +63,7 @@ class OnMyDeviceComponent(
     fun onEvent(event: OnMyDeviceEvent) {
         when (event) {
             is OnMyDeviceEvent.SearchQueryChanged -> {
-                onSearchQueryChanged(event.query);
+                onSearchQueryChanged(event.query)
             }
 
             OnMyDeviceEvent.BackClicked -> {
@@ -68,10 +75,11 @@ class OnMyDeviceComponent(
             }
 
             OnMyDeviceEvent.OpenFileExplorer -> {
-                // Platform-specific file picker logic (expect/actual or passed-in callback)
-                println("TODO: Launch file explorer")
-                documentManager.launch()
-
+                try {
+                    documentManager.launch()
+                } catch (e: Exception) {
+                    logger.e(e) { "Error launching file explorer" }
+                }
             }
         }
     }
@@ -86,21 +94,34 @@ class OnMyDeviceComponent(
 
     fun handlePickedDocument(doc: SharedDocument) {
         coroutineScope.launch {
-            val bytes = doc.toByteArray() ?: return@launch
-            val name = doc.fileName() ?: "Untitled"
-            val format = doc.bookFormat() ?: return@launch
+            try {
+                val bytes = doc.toByteArray() ?: run {
+                    logger.e { "Failed to read document bytes" }
+                    return@launch
+                }
 
-            logger.e { "Format: $format , Name: $name, Bytes: ${bytes.size}, Doc: ${doc.toString()}" }
+                val name = doc.fileName() ?: "Untitled"
+                val format = doc.bookFormat() ?: run {
+                    logger.e { "Unsupported book format" }
+                    return@launch
+                }
 
-            val book = Book(
-                title = name,
-                descriptor = "Imported from file",
-                format = format,
-                mediaType = format.toMediaType(),
-                filePath = doc.toString(),
-            )
+                logger.d { "Processing document: Format=$format, Name=$name, Size=${bytes.size} bytes" }
 
-            bookDao.insertBook(book)
+                val book = Book(
+                    title = name,
+                    description = "Imported from file",
+                    format = format,
+                    mediaType = format.toMediaType(),
+                    filePath = doc.toString(),
+                )
+
+                bookDao.insertBook(book)
+                logger.i { "Successfully imported book: $name" }
+
+            } catch (e: Exception) {
+                logger.e(e) { "Error processing picked document" }
+            }
         }
     }
 

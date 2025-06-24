@@ -12,7 +12,8 @@ actual fun createPermissionsManager(callback: PermissionCallback): PermissionsMa
     return remember { PermissionsManager(callback) }
 }
 
-actual class PermissionsManager actual constructor(private val callback: PermissionCallback) : PermissionHandler {
+actual class PermissionsManager actual constructor(private val callback: PermissionCallback) :
+    PermissionHandler {
     @Composable
     actual override fun askPermission(permission: PermissionType) {
         callback.onPermissionStatus(permission, PermissionStatus.GRANTED)
