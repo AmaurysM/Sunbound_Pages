@@ -20,6 +20,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.amaurysdelossantos.project.model.Book
+import com.amaurysdelossantos.project.navigation.RootComponent.Configuration
+import com.amaurysdelossantos.project.util.NavigationHolder
+import com.arkivanov.decompose.router.stack.bringToFront
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 
@@ -40,7 +43,7 @@ fun BookItem(
                 MaterialTheme.colorScheme.surfaceVariant,
                 MaterialTheme.shapes.medium
             )
-            .clickable { onClick() }
+            .clickable { NavigationHolder.navigation.bringToFront(Configuration.BookView(book.id.toString())) }
     ) {
         if (!book.coverImageUrl.isNullOrEmpty()) {
             val painterResource = asyncPainterResource(book.coverImageUrl!!)

@@ -27,6 +27,8 @@ kermit = "2.0.4"
 composeMultiplatform = "1.8.1"
 composeHotReload = "1.0.0-alpha10"
 kotlinx-coroutines = "1.10.2"
+materialIconsCore = "1.7.3"
+materialIconsExtended = "1.7.8"
 room = "2.7.2"
 ksp = "2.1.21-2.0.2"
 sqlite = "2.5.2"
@@ -34,6 +36,7 @@ koin = "4.0.0"
 sqliteJdbcVersion = "3.43.0.0"
 
 [libraries]
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "extensionsComposeJetbrains" }
 java-uuid-generator = { module = "com.fasterxml.uuid:java-uuid-generator", version.ref = "javaUuidGenerator" }
 kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
@@ -64,6 +67,7 @@ kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 # Room dependencies - use only these, not the platform-specific ones
+material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }

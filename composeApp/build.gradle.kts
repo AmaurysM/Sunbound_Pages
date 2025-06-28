@@ -70,8 +70,8 @@ kotlin {
                 implementation(libs.xerial.sqlite.jdbc)
 
                 implementation(libs.kamel.image)
-
-
+                //implementation(libs.material.icons.core)
+                implementation(compose.materialIconsExtended)
                 // implementation(libs.koin.android.v410)
             }
         }

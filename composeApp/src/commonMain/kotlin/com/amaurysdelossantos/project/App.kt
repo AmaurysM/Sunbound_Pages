@@ -8,7 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.amaurysdelossantos.project.customComposables.BottomBar
 import com.amaurysdelossantos.project.navigation.RootComponent
-import com.amaurysdelossantos.project.navigation.bookInfo.BookInfo
+import com.amaurysdelossantos.project.navigation.bookView.BookView
+import com.amaurysdelossantos.project.navigation.bookView.ebook.EBookView
+import com.amaurysdelossantos.project.navigation.bookView.ebook.readingEBook.ReadingEBookView
 import com.amaurysdelossantos.project.navigation.downloads.Downloads
 import com.amaurysdelossantos.project.navigation.finishedbooks.FinishedBooks
 import com.amaurysdelossantos.project.navigation.library.Library
@@ -40,7 +42,7 @@ fun App(root: RootComponent) {
                 animation = stackAnimation(fade())
             ) { child ->
                 when (val instance = child.instance) {
-                    is RootComponent.Child.BookInfo -> BookInfo(
+                    is RootComponent.Child.BookView -> BookView(
                         component = instance.component,
                         innerPadding = innerPadding,
                     )
@@ -76,6 +78,16 @@ fun App(root: RootComponent) {
                     )
 
                     is RootComponent.Child.OnMyDevice -> OnMyDevice(
+                        component = instance.component,
+                        innerPadding = innerPadding,
+                    )
+
+                    is RootComponent.Child.ReadingEBookView -> ReadingEBookView(
+                        component = instance.component,
+                        innerPadding = innerPadding,
+                    )
+
+                    is RootComponent.Child.EBookView -> EBookView(
                         component = instance.component,
                         innerPadding = innerPadding,
                     )
