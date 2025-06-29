@@ -1,22 +1,20 @@
 package com.amaurysdelossantos.project.navigation.bookView.ebook
 
+//import com.amaurysdelossantos.project.util.NavigationHolder.navigation
 import com.amaurysdelossantos.project.database.dao.BookDao
 import com.amaurysdelossantos.project.model.Book
-import com.amaurysdelossantos.project.navigation.RootComponent.Configuration
-import com.amaurysdelossantos.project.util.NavigationHolder.navigation
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.bringToFront
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class EBookViewComponent (
+class EBookViewComponent(
     componentContext: ComponentContext,
     private val bookId: String,
     private val bookDao: BookDao,
-): ComponentContext by componentContext {
+) : ComponentContext by componentContext {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     private val _book = MutableStateFlow<Book?>(null)
@@ -35,7 +33,7 @@ class EBookViewComponent (
     fun onEvent(event: EBookEvent) {
         when (event) {
             EBookEvent.StartBook -> {
-                navigation.bringToFront(Configuration.ReadingEBookView(book.value?.id.toString()))
+                //navigation.bringToFront(Configuration.ReadingEBookView(book.value?.id.toString()))
             }
         }
     }

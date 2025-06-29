@@ -5,4 +5,5 @@ interface OnMyDeviceEvent {
     object BackClicked : OnMyDeviceEvent
     object CancelSearch : OnMyDeviceEvent
     object OpenFileExplorer : OnMyDeviceEvent
+    data class BookClicked(val bookId: String) : OnMyDeviceEvent
 }

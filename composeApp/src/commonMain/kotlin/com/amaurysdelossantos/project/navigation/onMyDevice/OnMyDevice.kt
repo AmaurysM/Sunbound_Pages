@@ -70,13 +70,11 @@ fun OnMyDevice(
             .padding(top = 12.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        // Top Bar
         TopBar(
             iconColor = iconColor,
             onBackClicked = { component.onEvent(OnMyDeviceEvent.BackClicked) }
         )
 
-        // Search Bar
         SearchBar(
             searchQuery = searchQuery.value,
             iconColor = iconColor,
@@ -86,15 +84,13 @@ fun OnMyDevice(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Content Area
         ContentArea(
             isLoading = isLoading.value,
             filteredBooks = filteredBooks.value,
             searchQuery = searchQuery.value,
             onOpenFileExplorer = { component.onEvent(OnMyDeviceEvent.OpenFileExplorer) },
             onBookClick = { book ->
-                // Handle book click - you can add navigation logic here
-                println("Book clicked: ${book.title}")
+                component.onEvent(OnMyDeviceEvent.BookClicked(book.id))
             }
         )
     }

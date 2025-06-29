@@ -6,7 +6,6 @@ import com.amaurysdelossantos.project.database.enums.MediaType
 import com.amaurysdelossantos.project.database.enums.ReadingStatus
 import com.amaurysdelossantos.project.model.Book
 import com.amaurysdelossantos.project.model.MediaTypeCount
-import com.amaurysdelossantos.project.model.ReadingProgress
 import com.amaurysdelossantos.project.model.complexRelations.BookWithProgress
 import com.amaurysdelossantos.project.model.complexRelations.CompleteBook
 import kotlinx.coroutines.flow.Flow
@@ -286,8 +285,8 @@ class PreviewBookDao : BookDao {
                 .map { book ->
                     BookWithProgress(
                         book = book,
-                        progress =  TODO(),
-                        )
+                        progress = TODO(),
+                    )
                 }
         )
     }

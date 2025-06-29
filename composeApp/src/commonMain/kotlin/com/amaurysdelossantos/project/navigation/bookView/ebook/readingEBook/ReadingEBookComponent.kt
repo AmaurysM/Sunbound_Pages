@@ -13,7 +13,7 @@ class ReadingEBookComponent(
     componentContext: ComponentContext,
     private val bookId: String,
     private val bookDao: BookDao
-): ComponentContext by componentContext {
+) : ComponentContext by componentContext {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     private val _book = MutableStateFlow<Book?>(null)

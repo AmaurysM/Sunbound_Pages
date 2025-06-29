@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 class OnMyDeviceComponent(
     componentContext: ComponentContext,
     private val onBack: () -> Unit,
+    private val viewBook: (String) -> Unit,
     private val bookDao: BookDao,
 ) : ComponentContext by componentContext {
 
@@ -80,6 +81,11 @@ class OnMyDeviceComponent(
                 } catch (e: Exception) {
                     logger.e(e) { "Error launching file explorer" }
                 }
+            }
+
+            is OnMyDeviceEvent.BookClicked -> {
+                viewBook(event.bookId)
+                //println("Book clicked: ${event.bookId}")
             }
         }
     }

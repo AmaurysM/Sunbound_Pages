@@ -211,7 +211,7 @@ fun AudioBook(
                     )
 
                     DurationStat(
-                        value = when(book.readingStatus.name) {
+                        value = when (book.readingStatus.name) {
                             "COMPLETED" -> "100%"
                             "IN_PROGRESS" -> "50%" // This would come from actual progress
                             else -> "0%"

@@ -1,4 +1,4 @@
-package com.amaurysdelossantos.project.navigation.readingNow
+package com.amaurysdelossantos.project.navigation.reading
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -26,8 +26,8 @@ import sunboundpages.composeapp.generated.resources.Res
 import sunboundpages.composeapp.generated.resources.sample_book_cover
 
 @Composable
-fun ReadingNow(
-    component: ReadingNowComponent,
+fun ReadingView(
+    component: ReadingComponent,
     innerPadding: PaddingValues = PaddingValues()
 ) {
     val scrollState = rememberScrollState()
@@ -76,7 +76,7 @@ fun ReadingNow(
                     reading.value.forEach {
                         BookItem(
                             it,
-                            onClick = { component.onEvent(ReadingNowEvent.ClickBook(it.id.toString())) }
+                            onClick = { component.onEvent(ReadingEvent.ClickBook(it.id.toString())) }
                         )
                     }
                 }
@@ -107,7 +107,7 @@ fun ReadingNow(
                     resumed.value.forEach {
                         BookItem(
                             it,
-                            onClick = { component.onEvent(ReadingNowEvent.ClickBook(it.id.toString())) }
+                            onClick = { component.onEvent(ReadingEvent.ClickBook(it.id.toString())) }
                         )
                     }
                 }
@@ -138,7 +138,7 @@ fun ReadingNow(
                         style = typography.labelLarge,
                         modifier = Modifier
                             .clickable {
-                                component.onEvent(ReadingNowEvent.SeeAllFinished)
+                                component.onEvent(ReadingEvent.SeeAllFinished)
                             }
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     )
@@ -155,7 +155,7 @@ fun ReadingNow(
                     finished.value.forEach {
                         BookItem(
                             it,
-                            onClick = { component.onEvent(ReadingNowEvent.ClickBook(it.id.toString())) }
+                            onClick = { component.onEvent(ReadingEvent.ClickBook(it.id.toString())) }
                         )
                     }
                 }

@@ -38,7 +38,7 @@ fun GenericBook(
     component: ComicInfoComponent,
     innerPadding: PaddingValues,
     book: Book
-){
+) {
     val scrollState = rememberScrollState()
 
     Column(

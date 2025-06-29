@@ -39,6 +39,18 @@ class BookViewComponent(
                 onBack()
             }
 
+            BookViewEvent.IsEBookClicked -> {
+
+            }
+
+            BookViewEvent.IsComicClicked -> {
+
+            }
+
+            BookViewEvent.IsAudiobookClicked -> {
+
+            }
+
         }
     }
 

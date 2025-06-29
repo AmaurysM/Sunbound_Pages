@@ -8,12 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.amaurysdelossantos.project.database.enums.MediaType
-import com.amaurysdelossantos.project.navigation.RootComponent.Configuration
-import com.amaurysdelossantos.project.util.NavigationHolder.navigation
 import com.amaurysdelossantos.project.util.getBookFormat
 import com.amaurysdelossantos.project.util.toMediaType
-import com.arkivanov.decompose.router.stack.bringToFront
 
 @Composable
 fun BookView(
@@ -35,13 +31,13 @@ fun BookView(
     val format = getBookFormat(book.filePath)
     val mediaType = format?.toMediaType()
 
-    when (mediaType) {
-        MediaType.EBOOK -> navigation.bringToFront(Configuration.EBookView(book.id))
-
-        MediaType.COMIC -> ComicView(book, component, innerPadding)
-        MediaType.AUDIOBOOK -> AudioBookView(book, component, innerPadding)
-        else -> navigation.bringToFront(Configuration.EBookView(book.id))
-    }
+//    when (mediaType) {
+//        MediaType.EBOOK -> navigation.bringToFront(Configuration.EBookView(book.id))
+//
+//        MediaType.COMIC -> ComicView(book, component, innerPadding)
+//        MediaType.AUDIOBOOK -> AudioBookView(book, component, innerPadding)
+//        else -> navigation.bringToFront(Configuration.EBookView(book.id))
+//    }
 }
 
 

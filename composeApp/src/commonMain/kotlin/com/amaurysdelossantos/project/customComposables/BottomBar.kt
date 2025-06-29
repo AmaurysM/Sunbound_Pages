@@ -18,8 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.amaurysdelossantos.project.navigation.RootComponent.Configuration
-import com.amaurysdelossantos.project.util.NavigationHolder.navigation
-import com.arkivanov.decompose.router.stack.bringToFront
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -30,17 +28,22 @@ import sunboundpages.composeapp.generated.resources.reading
 import sunboundpages.composeapp.generated.resources.search
 import sunboundpages.composeapp.generated.resources.settings
 
+enum class BottomNavItem {
+    Reading, Library, Downloads, Search, Settings
+}
+
 @Composable
 fun BottomBar(
     modifier: Modifier = Modifier,
-    selectedDestination: Configuration? = null // Optional: for visual selection
+    selectedDestination: Configuration? = null,
+    onNavigationSelected: (BottomNavItem) -> Unit = {}
 ) {
     val items = listOf(
-        BottomBarItem("Reading", Res.drawable.reading, Configuration.ReadingNow),
-        BottomBarItem("Library", Res.drawable.library, Configuration.Library),
-        BottomBarItem("Downloads", Res.drawable.download, Configuration.Downloads),
-        BottomBarItem("Search", Res.drawable.search, Configuration.Search),
-        BottomBarItem("Settings", Res.drawable.settings, Configuration.Settings)
+        BottomBarItem("Reading", Res.drawable.reading, BottomNavItem.Reading),
+        BottomBarItem("Library", Res.drawable.library, BottomNavItem.Library),
+        BottomBarItem("Downloads", Res.drawable.download, BottomNavItem.Downloads),
+        BottomBarItem("Search", Res.drawable.search, BottomNavItem.Search),
+        BottomBarItem("Settings", Res.drawable.settings, BottomNavItem.Settings)
     )
 
     val backgroundColor = MaterialTheme.colorScheme.surface
@@ -53,13 +56,20 @@ fun BottomBar(
             .background(backgroundColor),
     ) {
         items.forEach { item ->
-            val isSelected = item.destination == selectedDestination
+            val isSelected = when (selectedDestination) {
+                Configuration.Reading -> item.destination == BottomNavItem.Reading
+                Configuration.Library -> item.destination == BottomNavItem.Library
+                Configuration.Downloads -> item.destination == BottomNavItem.Downloads
+                Configuration.Search -> item.destination == BottomNavItem.Search
+                Configuration.Settings -> item.destination == BottomNavItem.Settings
+                else -> false
+            }
 
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
-                    .clickable { navigation.bringToFront(item.destination) },
+                    .clickable { onNavigationSelected(item.destination) },
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -89,7 +99,7 @@ fun BottomBar(
 data class BottomBarItem(
     val label: String,
     val icon: DrawableResource,
-    val destination: Configuration
+    val destination: BottomNavItem
 )
 
 @Preview

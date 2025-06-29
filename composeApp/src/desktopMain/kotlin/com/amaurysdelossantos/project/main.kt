@@ -6,8 +6,10 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.amaurysdelossantos.project.di.initializeKoin
 import com.amaurysdelossantos.project.navigation.RootComponent
+import com.amaurysdelossantos.project.navigation.RootComponent.Configuration
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
+import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 
 fun main() = application {
@@ -16,11 +18,13 @@ fun main() = application {
     //val database = getDatabaseBuilder()
 
     initializeKoin()
+    val navigation = StackNavigation<Configuration>()
 
 
     val root = remember {
         RootComponent(
-            componentContext = DefaultComponentContext(lifecycle = lifecycle)
+            componentContext = DefaultComponentContext(lifecycle = lifecycle),
+            navigation
         )
     }
 
