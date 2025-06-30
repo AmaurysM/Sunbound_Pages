@@ -1,5 +1,6 @@
 package com.amaurysdelossantos.project.navigation.bookView.ebook
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,12 +34,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,10 +54,13 @@ import com.amaurysdelossantos.project.navigation.bookView.InfoCard
 import com.amaurysdelossantos.project.navigation.bookView.StatItem
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import sunboundpages.composeapp.generated.resources.Res
+import sunboundpages.composeapp.generated.resources.chevron_left
+import sunboundpages.composeapp.generated.resources.more_horiz
 import kotlin.math.round
 
-// Enhanced UI State to handle different loading states
 sealed class EBookUiState {
     object Loading : EBookUiState()
     data class Success(val book: Book) : EBookUiState()
@@ -70,7 +76,7 @@ fun EBookPreview() {
         bookId = "preview-book-1",
         bookDao = PreviewBookDao()
     )
-    EBookView(component, PaddingValues(0.dp))
+    EBookView(component)
 }
 
 @Composable
@@ -80,36 +86,68 @@ fun EBookView(
 ) {
     val book = component.book.collectAsState().value
 
-    // Determine UI state based on book data
     val uiState = when {
         book == null -> EBookUiState.Loading
         else -> EBookUiState.Success(book)
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                top = innerPadding.calculateTopPadding(),
-                bottom = innerPadding.calculateBottomPadding()
-            )
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        when (uiState) {
-            is EBookUiState.Loading -> LoadingState()
-            is EBookUiState.Success -> BookContent(
-                book = uiState.book,
-                onStartReading = { component.onEvent(EBookEvent.StartBook) }
-            )
+    val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
 
-            is EBookUiState.Error -> ErrorState(
-                message = uiState.message,
-                onRetry = { /* component.onEvent(EBookEvent.Retry) */ }
-            )
+    Scaffold(
+        modifier = Modifier.fillMaxSize()//.background(MaterialTheme.colorScheme.background).padding(innerPadding),
+        , topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(top = innerPadding.calculateTopPadding(), start = 20.dp, end = 20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.chevron_left),
+                    contentDescription = "Back button",
+                    colorFilter = ColorFilter.tint(iconColor),
+                    modifier = Modifier.clickable { component.onEvent(EBookEvent.NavigateBack) }
+                )
 
-            is EBookUiState.Empty -> EmptyState()
+
+
+                Image(
+                    painter = painterResource(Res.drawable.more_horiz),
+                    contentDescription = "Show More Button",
+                    colorFilter = ColorFilter.tint(iconColor)
+                )
+            }
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = innerPadding.calculateTopPadding() ,
+                    bottom = innerPadding.calculateBottomPadding()
+                )
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            when (uiState) {
+                is EBookUiState.Loading -> LoadingState()
+                is EBookUiState.Success -> BookContent(
+                    book = uiState.book,
+                    onStartReading = { component.onEvent(EBookEvent.StartBook) }
+                )
+
+                is EBookUiState.Error -> ErrorState(
+                    message = uiState.message,
+                    onRetry = { /* component.onEvent(EBookEvent.Retry) */ }
+                )
+
+                is EBookUiState.Empty -> EmptyState()
+            }
         }
     }
+
+
 }
 
 @Composable

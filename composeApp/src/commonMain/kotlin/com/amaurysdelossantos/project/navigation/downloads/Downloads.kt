@@ -32,7 +32,7 @@ import sunboundpages.composeapp.generated.resources.radar
 @Composable
 fun Downloads(
     component: DownloadsComponent,
-    innerPadding: PaddingValues = PaddingValues()
+    innerPadding: PaddingValues = PaddingValues(),
 ) {
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
 

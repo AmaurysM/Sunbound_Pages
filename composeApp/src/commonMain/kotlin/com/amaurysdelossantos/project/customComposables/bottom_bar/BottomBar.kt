@@ -1,4 +1,4 @@
-package com.amaurysdelossantos.project.customComposables
+package com.amaurysdelossantos.project.customComposables.bottom_bar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

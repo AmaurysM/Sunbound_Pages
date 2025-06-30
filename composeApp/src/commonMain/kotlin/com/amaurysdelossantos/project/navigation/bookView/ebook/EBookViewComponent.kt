@@ -16,7 +16,8 @@ class EBookViewComponent(
     componentContext: ComponentContext,
     private val bookId: String,
     private val bookDao: BookDao,
-    private val readBook: (bookId: String) -> Unit = {}
+    private val readBook: (bookId: String) -> Unit = {},
+    private val navigateBack: () -> Unit = {}
 ) : ComponentContext by componentContext {
 
     // Use SupervisorJob to prevent cancellation issues
@@ -67,12 +68,11 @@ class EBookViewComponent(
             EBookEvent.Retry -> {
                 loadBook(bookId)
             }
+
+            EBookEvent.NavigateBack -> {
+                navigateBack()
+            }
         }
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        // Cancel any ongoing operations when component is destroyed
-//        coroutineScope.coroutineContext.cancel()
-//    }
 }

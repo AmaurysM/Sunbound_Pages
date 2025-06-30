@@ -38,7 +38,7 @@ import sunboundpages.composeapp.generated.resources.smartphone
 @Composable
 fun Library(
     component: LibraryComponent,
-    innerPadding: PaddingValues = PaddingValues()
+    innerPadding: PaddingValues = PaddingValues(),
 ) {
     //val books by bookDao.getAllBooks().collectAsState(initial = emptyList())
     val scrollState = rememberScrollState()

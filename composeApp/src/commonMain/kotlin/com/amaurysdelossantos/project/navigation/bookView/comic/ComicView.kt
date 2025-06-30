@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.sp
 fun ComicView(
     component: ComicInfoComponent,
     innerPadding: PaddingValues = PaddingValues(0.dp),
-    //book: Book
 ) {
     val scrollState = rememberScrollState()
     val book by component.book.collectAsState()

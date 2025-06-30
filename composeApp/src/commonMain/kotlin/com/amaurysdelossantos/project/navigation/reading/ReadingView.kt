@@ -28,7 +28,7 @@ import sunboundpages.composeapp.generated.resources.sample_book_cover
 @Composable
 fun ReadingView(
     component: ReadingComponent,
-    innerPadding: PaddingValues = PaddingValues()
+    innerPadding: PaddingValues = PaddingValues(),
 ) {
     val scrollState = rememberScrollState()
     val colorScheme = MaterialTheme.colorScheme

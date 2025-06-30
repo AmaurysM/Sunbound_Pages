@@ -42,7 +42,7 @@ import sunboundpages.composeapp.generated.resources.search
 @Composable
 fun FinishedBooks(
     component: FinishedBooksComponent,
-    innerPadding: PaddingValues = PaddingValues()
+    innerPadding: PaddingValues = PaddingValues(),
 ) {
 
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant

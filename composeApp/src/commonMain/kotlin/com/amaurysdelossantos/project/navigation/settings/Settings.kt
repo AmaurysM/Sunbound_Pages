@@ -41,7 +41,7 @@ import sunboundpages.composeapp.generated.resources.translate
 @Composable
 fun Settings(
     component: SettingsComponent,
-    innerPadding: PaddingValues = PaddingValues()
+    innerPadding: PaddingValues = PaddingValues(),
 ) {
     Column(
         modifier = Modifier.padding(innerPadding)

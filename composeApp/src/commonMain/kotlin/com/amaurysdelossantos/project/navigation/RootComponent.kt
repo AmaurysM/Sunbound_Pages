@@ -224,7 +224,10 @@ class RootComponent(
                     ReadingEBookComponent(
                         context,
                         config.bookId,
-                        inject<BookDatabase>().value.bookDao()
+                        inject<BookDatabase>().value.bookDao(),
+                        onBack = {
+                            goBack()
+                        }
                     )
                 )
             }
@@ -238,6 +241,9 @@ class RootComponent(
                         readBook = { id ->
                             Logger.e { "Reading book with id: $id" }
                             navigateTo(Configuration.BookView.EBookView.ReadingEBookView(id))
+                        },
+                        navigateBack = {
+                            goBack()
                         }
                     )
                 )

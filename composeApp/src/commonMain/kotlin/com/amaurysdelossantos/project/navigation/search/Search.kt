@@ -41,7 +41,7 @@ import sunboundpages.composeapp.generated.resources.search
 @Composable
 fun Search(
     component: SearchComponent,
-    innerPadding: PaddingValues = PaddingValues()
+    innerPadding: PaddingValues = PaddingValues(),
 ) {
 
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
