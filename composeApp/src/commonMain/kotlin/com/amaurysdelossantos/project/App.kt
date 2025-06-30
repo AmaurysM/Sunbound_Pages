@@ -11,7 +11,7 @@ import com.amaurysdelossantos.project.customComposables.BottomBar
 import com.amaurysdelossantos.project.customComposables.BottomNavItem
 import com.amaurysdelossantos.project.navigation.RootComponent
 import com.amaurysdelossantos.project.navigation.RootComponent.Configuration
-import com.amaurysdelossantos.project.navigation.bookView.BookView
+import com.amaurysdelossantos.project.navigation.bookView.comic.ComicView
 import com.amaurysdelossantos.project.navigation.bookView.ebook.EBookView
 import com.amaurysdelossantos.project.navigation.bookView.ebook.readingEBook.ReadingEBookView
 import com.amaurysdelossantos.project.navigation.downloads.Downloads
@@ -21,7 +21,7 @@ import com.amaurysdelossantos.project.navigation.onMyDevice.OnMyDevice
 import com.amaurysdelossantos.project.navigation.reading.ReadingView
 import com.amaurysdelossantos.project.navigation.search.Search
 import com.amaurysdelossantos.project.navigation.settings.Settings
-import com.amaurysdelossantos.project.util.resolveAnimationMapBased
+import com.amaurysdelossantos.project.util.resolveAnimation
 import com.arkivanov.decompose.FaultyDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
@@ -51,21 +51,25 @@ fun App(root: RootComponent) {
                 )
             }
         ) { innerPadding ->
-            val fromConfig = root.lastConfiguration
+            val fromConfig = root.previousConfiguration
             val toConfig = childStack.active.configuration
 
             Children(
                 stack = childStack,
                 modifier = Modifier,
-                animation = stackAnimation(
-                    resolveAnimationMapBased(fromConfig, toConfig as Configuration)
-                )
+                animation = stackAnimation { child, otherChild, direction ->
+                    resolveAnimation(
+                        from = root.previousConfiguration,
+                        to = child.configuration as Configuration,
+                        isForward = root.lastDirection == RootComponent.NavigationDirection.Forward
+                    )
+                }
             ) { child ->
                 when (val instance = child.instance) {
-                    is RootComponent.Child.BookView -> BookView(
-                        component = instance.component,
-                        innerPadding = innerPadding,
-                    )
+//                    is RootComponent.Child.BookView -> BookView(
+//                        component = instance.component,
+//                        innerPadding = innerPadding,
+//                    )
 
                     is RootComponent.Child.Downloads -> Downloads(
                         component = instance.component,
@@ -108,6 +112,11 @@ fun App(root: RootComponent) {
                     )
 
                     is RootComponent.Child.EBookView -> EBookView(
+                        component = instance.component,
+                        innerPadding = innerPadding,
+                    )
+
+                    is RootComponent.Child.ComicView -> ComicView(
                         component = instance.component,
                         innerPadding = innerPadding,
                     )

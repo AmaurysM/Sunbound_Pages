@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import com.amaurysdelossantos.project.di.initializeKoin
 import com.amaurysdelossantos.project.navigation.RootComponent
 import com.amaurysdelossantos.project.navigation.RootComponent.Configuration
+import com.amaurysdelossantos.project.util.initAppContext
 import com.arkivanov.decompose.retainedComponent
 import com.arkivanov.decompose.router.stack.StackNavigation
 import org.koin.android.ext.koin.androidContext
@@ -18,6 +19,7 @@ class MainActivity : ComponentActivity() {
         initializeKoin {
             androidContext(this@MainActivity)
         }
+        initAppContext(this)
         val navigation = StackNavigation<Configuration>()
         val root = retainedComponent {
             RootComponent(it, navigation)

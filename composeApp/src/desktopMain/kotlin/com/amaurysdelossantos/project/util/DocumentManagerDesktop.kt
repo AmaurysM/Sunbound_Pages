@@ -55,4 +55,8 @@ actual class SharedDocument(private val file: File) {
     actual fun fileName(): String? {
         return file.name
     }
+
+    actual fun getFilePath(): String? {
+        return file.path.toString()
+    }
 }

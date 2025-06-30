@@ -2,6 +2,7 @@ package com.amaurysdelossantos.project.util
 
 import com.amaurysdelossantos.project.database.enums.BookFormat
 import com.amaurysdelossantos.project.database.enums.MediaType
+import com.amaurysdelossantos.project.database.enums.UniqueMediaType
 
 fun getBookFormat(filename: String): BookFormat? {
     val name = filename.lowercase()
@@ -60,10 +61,9 @@ fun BookFormat.toMediaType(): MediaType = when (this) {
     BookFormat.PNG,
     BookFormat.GIF,
     BookFormat.WEBP,
-    BookFormat.BMP ->
+    BookFormat.BMP,
+    BookFormat.WEBTOON ->
         MediaType.COMIC
-
-    BookFormat.WEBTOON -> MediaType.WEBTOON
 
     BookFormat.MP3,
     BookFormat.AAC,
@@ -73,4 +73,18 @@ fun BookFormat.toMediaType(): MediaType = when (this) {
     BookFormat.FLAC,
     BookFormat.WAV ->
         MediaType.AUDIOBOOK
+}
+
+fun MediaType.toUniqueMediaType(): UniqueMediaType? = when (this) {
+    MediaType.EBOOK,
+    MediaType.LIGHT_NOVEL,
+    MediaType.VISUAL_NOVEL -> UniqueMediaType.EBOOK
+
+    MediaType.COMIC,
+    MediaType.MANGA,
+    MediaType.WEBTOON,
+    MediaType.MANHWA,
+    MediaType.MANHUA -> UniqueMediaType.COMIC
+
+    MediaType.AUDIOBOOK -> UniqueMediaType.AUDIOBOOK
 }

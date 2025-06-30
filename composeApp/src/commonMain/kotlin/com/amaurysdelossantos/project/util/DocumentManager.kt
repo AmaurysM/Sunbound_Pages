@@ -16,6 +16,7 @@ expect class SharedDocument {
     fun toByteArray(): ByteArray?
     fun bookFormat(): BookFormat?
     fun fileName(): String?
+    fun getFilePath(): String?
 }
 
 

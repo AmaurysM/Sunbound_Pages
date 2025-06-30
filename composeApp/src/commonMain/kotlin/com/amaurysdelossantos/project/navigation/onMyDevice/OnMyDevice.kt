@@ -91,6 +91,9 @@ fun OnMyDevice(
             onOpenFileExplorer = { component.onEvent(OnMyDeviceEvent.OpenFileExplorer) },
             onBookClick = { book ->
                 component.onEvent(OnMyDeviceEvent.BookClicked(book.id))
+            },
+            onBookDelete = { book ->
+                component.onEvent(OnMyDeviceEvent.BookDeleted(book.id))
             }
         )
     }
@@ -185,7 +188,8 @@ private fun ContentArea(
     filteredBooks: List<Book>,
     searchQuery: String,
     onOpenFileExplorer: () -> Unit,
-    onBookClick: (Book) -> Unit
+    onBookClick: (Book) -> Unit,
+    onBookDelete: (Book) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -208,7 +212,8 @@ private fun ContentArea(
             else -> {
                 BookGrid(
                     books = filteredBooks,
-                    onBookClick = onBookClick
+                    onBookClick = onBookClick,
+                    onBookDelete = onBookDelete
                 )
             }
         }
@@ -321,7 +326,8 @@ private fun EmptyLibraryState(
 @Composable
 private fun BookGrid(
     books: List<Book>,
-    onBookClick: (Book) -> Unit
+    onBookClick: (Book) -> Unit,
+    onBookDelete: (Book) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -333,7 +339,8 @@ private fun BookGrid(
         items(books.size) { book ->
             BookItem(
                 book = books[book],
-                onClick = { onBookClick(books[book]) }
+                onClick = { onBookClick(books[book]) },
+                onDelete = { onBookDelete(books[book]) }
             )
         }
     }

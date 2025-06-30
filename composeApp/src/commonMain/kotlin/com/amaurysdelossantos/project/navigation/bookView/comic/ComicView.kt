@@ -24,6 +24,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -32,15 +34,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.amaurysdelossantos.project.model.Book
 
 @Composable
-fun ComicInfo(
+fun ComicView(
     component: ComicInfoComponent,
-    innerPadding: PaddingValues,
-    book: Book
+    innerPadding: PaddingValues = PaddingValues(0.dp),
+    //book: Book
 ) {
     val scrollState = rememberScrollState()
+    val book by component.book.collectAsState()
+
+    if (book == null) {
+
+        Text(
+            text = "Loading...",
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(Alignment.Center)
+        )
+
+    }
 
     Column(
         modifier = Modifier
@@ -118,7 +131,7 @@ fun ComicInfo(
                             letterSpacing = 2.sp
                         )
                         Text(
-                            text = book.title,
+                            text = book?.title ?: "Loading...",
                             style = MaterialTheme.typography.headlineMedium,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
@@ -131,7 +144,7 @@ fun ComicInfo(
         }
 
         // Genre Badge
-        book.genre?.let { genre ->
+        book?.genre?.let { genre ->
             Card(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -183,7 +196,7 @@ fun ComicInfo(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                book.totalPages?.let { pages ->
+                book?.totalPages?.let { pages ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
@@ -217,7 +230,7 @@ fun ComicInfo(
         }
 
         // Description with Comic Theme
-        book.description?.let { description ->
+        book?.description?.let { description ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()

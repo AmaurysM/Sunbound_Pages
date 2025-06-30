@@ -1,8 +1,11 @@
 package com.amaurysdelossantos.project.navigation.library
 
+import co.touchlab.kermit.Logger
 import com.amaurysdelossantos.project.database.dao.BookDao
 import com.amaurysdelossantos.project.model.Book
+import com.amaurysdelossantos.project.util.AppDirectories
 import com.amaurysdelossantos.project.util.DocumentManager
+import com.amaurysdelossantos.project.util.LocalFileSystem
 import com.amaurysdelossantos.project.util.SharedDocument
 import com.amaurysdelossantos.project.util.toMediaType
 import com.arkivanov.decompose.ComponentContext
@@ -10,6 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okio.Path
+import okio.Path.Companion.toPath
 
 class LibraryComponent(
     componentContext: ComponentContext,
@@ -48,16 +54,30 @@ class LibraryComponent(
             val name = doc.fileName() ?: "Untitled"
             val format = doc.bookFormat() ?: return@launch
 
+            val safeName = name.replace(Regex("[^a-zA-Z0-9._-]"), "_")
+            val filePath = AppDirectories.getAppStoragePath() + "/$safeName"
+            val path: Path = filePath.toPath()
 
-            val book = Book(
-                title = name,
-                description = "Imported from file",
-                format = format,
-                mediaType = format.toMediaType(),
-                filePath = doc.toString(),
-            )
+            try {
+                withContext(Dispatchers.Default) {
+                    LocalFileSystem.write(path) {
+                        write(bytes)
+                    }
+                }
 
-            bookDao.insertBook(book)
+                val book = Book(
+                    title = name,
+                    format = format,
+                    mediaType = format.toMediaType(),
+                    filePath = filePath,
+                )
+
+                Logger.d { "Saved book to: $filePath" }
+
+                bookDao.insertBook(book)
+            } catch (e: Exception) {
+                Logger.e(e) { "Failed to write file to storage" }
+            }
         }
     }
 }

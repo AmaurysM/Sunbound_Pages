@@ -1,7 +1,6 @@
 package com.amaurysdelossantos.project.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -39,8 +38,9 @@ interface BookDao {
     @Query("UPDATE books SET isDeleted = 1, updatedAt = :timestamp WHERE id = :bookId")
     suspend fun softDeleteBook(bookId: String, timestamp: Long)
 
-    @Delete
-    suspend fun hardDeleteBook(book: Book)
+    //@Delete
+    @Query("DELETE FROM books WHERE id = :bookId")
+    suspend fun hardDeleteBook(bookId: String)
 
     // Complex queries with relations
     @Transaction

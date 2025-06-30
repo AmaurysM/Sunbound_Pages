@@ -32,7 +32,7 @@ actual fun rememberDocumentManager(onResult: (SharedDocument?) -> Unit): Documen
                 didPickDocumentAtURL.startAccessingSecurityScopedResource()
                 val data = NSData.dataWithContentsOfURL(didPickDocumentAtURL)
                 didPickDocumentAtURL.stopAccessingSecurityScopedResource()
-                onResult.invoke(SharedDocument(data))
+                onResult.invoke(SharedDocument(data, didPickDocumentAtURL))
                 controller.dismissViewControllerAnimated(true, null)
             }
         }
@@ -56,7 +56,10 @@ actual class DocumentManager actual constructor(private val onLaunch: () -> Unit
     }
 }
 
-actual class SharedDocument(private val data: NSData?) {
+actual class SharedDocument(
+    private val data: NSData?,
+    private val url: NSURL?
+) {
     @OptIn(ExperimentalForeignApi::class)
     actual fun toByteArray(): ByteArray? {
         return data?.let {
@@ -68,14 +71,14 @@ actual class SharedDocument(private val data: NSData?) {
 
     actual fun bookFormat(): BookFormat? {
         val name = fileName()?.lowercase()
-        return if (name == null) {
-            null
-        } else {
-            getBookFormat(name)
-        }
+        return if (name == null) null else getBookFormat(name)
     }
 
     actual fun fileName(): String? {
-        return null
+        return url?.lastPathComponent
+    }
+
+    actual fun getFilePath(): String? {
+        return url?.path
     }
 }

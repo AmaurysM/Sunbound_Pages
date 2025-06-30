@@ -87,6 +87,14 @@ class OnMyDeviceComponent(
                 viewBook(event.bookId)
                 //println("Book clicked: ${event.bookId}")
             }
+
+            is OnMyDeviceEvent.BookDeleted -> {
+                coroutineScope.launch {
+
+                    bookDao.hardDeleteBook(event.bookId)
+
+                }
+            }
         }
     }
 

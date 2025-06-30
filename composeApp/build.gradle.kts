@@ -73,6 +73,8 @@ kotlin {
                 //implementation(libs.material.icons.core)
                 implementation(compose.materialIconsExtended)
                 // implementation(libs.koin.android.v410)
+
+                implementation("com.squareup.okio:okio:3.7.0")
             }
         }
         val commonTest by getting {

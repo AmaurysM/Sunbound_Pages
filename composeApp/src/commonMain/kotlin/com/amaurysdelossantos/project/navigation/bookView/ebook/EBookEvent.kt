@@ -1,5 +1,6 @@
 package com.amaurysdelossantos.project.navigation.bookView.ebook
 
-interface EBookEvent {
-    object StartBook : EBookEvent
+sealed class EBookEvent {
+    object StartBook : EBookEvent()
+    object Retry : EBookEvent()
 }

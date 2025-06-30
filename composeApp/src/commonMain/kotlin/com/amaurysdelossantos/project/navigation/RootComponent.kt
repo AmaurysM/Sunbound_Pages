@@ -1,7 +1,9 @@
 package com.amaurysdelossantos.project.navigation
 
+import co.touchlab.kermit.Logger
 import com.amaurysdelossantos.project.database.BookDatabase
-import com.amaurysdelossantos.project.navigation.RootComponent.Child.BookView
+import com.amaurysdelossantos.project.database.enums.MediaType
+import com.amaurysdelossantos.project.navigation.RootComponent.Child.ComicView
 import com.amaurysdelossantos.project.navigation.RootComponent.Child.Downloads
 import com.amaurysdelossantos.project.navigation.RootComponent.Child.EBookView
 import com.amaurysdelossantos.project.navigation.RootComponent.Child.FinishedBooks
@@ -11,7 +13,7 @@ import com.amaurysdelossantos.project.navigation.RootComponent.Child.ReadingEBoo
 import com.amaurysdelossantos.project.navigation.RootComponent.Child.ReadingNow
 import com.amaurysdelossantos.project.navigation.RootComponent.Child.Search
 import com.amaurysdelossantos.project.navigation.RootComponent.Child.Settings
-import com.amaurysdelossantos.project.navigation.bookView.BookViewComponent
+import com.amaurysdelossantos.project.navigation.bookView.comic.ComicInfoComponent
 import com.amaurysdelossantos.project.navigation.bookView.ebook.EBookViewComponent
 import com.amaurysdelossantos.project.navigation.bookView.ebook.readingEBook.ReadingEBookComponent
 import com.amaurysdelossantos.project.navigation.downloads.DownloadsComponent
@@ -21,6 +23,8 @@ import com.amaurysdelossantos.project.navigation.onMyDevice.OnMyDeviceComponent
 import com.amaurysdelossantos.project.navigation.reading.ReadingComponent
 import com.amaurysdelossantos.project.navigation.search.SearchComponent
 import com.amaurysdelossantos.project.navigation.settings.SettingsComponent
+import com.amaurysdelossantos.project.util.getBookFormat
+import com.amaurysdelossantos.project.util.toMediaType
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -28,8 +32,12 @@ import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -44,7 +52,6 @@ class RootComponent(
     }
 
     init {
-        // Register the back callback to intercept system back events
         backHandler.register(backCallback)
     }
 
@@ -57,34 +64,82 @@ class RootComponent(
             childFactory = ::createChild
         )
 
-    var lastConfiguration: Configuration? = null
-
     enum class NavigationDirection { Forward, Backward }
 
     var lastDirection: NavigationDirection = NavigationDirection.Forward
         private set
 
+    private var _previousConfiguration: Configuration? = null
+    val previousConfiguration: Configuration? get() = _previousConfiguration
+
+    private var isNavigating = false
+
     fun navigateTo(configuration: Configuration) {
-        lastConfiguration = childStack.active.configuration as Configuration?
+        if (isNavigating || childStack.active.configuration == configuration) return
+
+        isNavigating = true
+        _previousConfiguration = childStack.active.configuration as Configuration?
         lastDirection = NavigationDirection.Forward
+
         navigation.bringToFront(configuration)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            kotlinx.coroutines.delay(300)
+            isNavigating = false
+        }
+    }
+
+    // Helper method to navigate to book view with proper media type detection
+    fun navigateToBookView(bookId: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val bookDao = inject<BookDatabase>().value.bookDao()
+                val book = bookDao.getBookById(bookId)
+                val format = getBookFormat(book?.filePath.orEmpty())
+                val mediaType = format?.toMediaType()
+
+                val destination = when (mediaType) {
+                    MediaType.EBOOK,
+                    MediaType.LIGHT_NOVEL,
+                    MediaType.VISUAL_NOVEL -> Configuration.BookView.EBookView(bookId)
+
+                    MediaType.COMIC,
+                    MediaType.MANGA,
+                    MediaType.MANHWA,
+                    MediaType.MANHUA,
+                    MediaType.WEBTOON -> Configuration.BookView.ComicView(bookId)
+
+                    MediaType.AUDIOBOOK -> Configuration.BookView.EBookView.ReadingEBookView(bookId)
+                    null -> Configuration.BookView.EBookView(bookId) // Default fallback
+                }
+
+                navigateTo(destination)
+            } catch (e: Exception) {
+                Logger.e(e) { "Error navigating to book view for bookId: $bookId" }
+                // Fallback to EBookView if there's an error
+                navigateTo(Configuration.BookView.EBookView(bookId))
+            }
+        }
     }
 
     fun goBack() {
-        lastConfiguration = childStack.active.configuration as Configuration?
+        _previousConfiguration = childStack.active.configuration as Configuration?
         lastDirection = NavigationDirection.Backward
         navigation.pop()
     }
 
+    fun replaceSelfWith(configuration: Configuration) {
+        _previousConfiguration = childStack.active.configuration as Configuration?
+        lastDirection = NavigationDirection.Forward
+        navigation.replaceCurrent(configuration)
+    }
+
     private fun handleBackPressed() {
-        // Check if we can go back
         if (childStack.value.items.size > 1) {
-            // Set direction to backward for consistent animation
-            lastConfiguration = childStack.active.configuration as Configuration?
+            _previousConfiguration = childStack.active.configuration as Configuration?
             lastDirection = NavigationDirection.Backward
             navigation.pop()
         }
-
     }
 
     // Helper method to check if back navigation is possible
@@ -100,10 +155,10 @@ class RootComponent(
                 ReadingComponent(
                     componentContext = context,
                     onBookClicked = { id ->
-                        navigateTo(Configuration.ReadingEBookView(id))
+                        navigateTo(Configuration.BookView.EBookView.ReadingEBookView(id))
                     },
                     onSeeMore = {
-                        navigateTo(Configuration.FinishedBooks)
+                        navigateTo(Configuration.Reading.FinishedBooks)
                     },
                     bookDao = inject<BookDatabase>().value.bookDao()
                 )
@@ -113,7 +168,7 @@ class RootComponent(
                 LibraryComponent(
                     context,
                     onMyDeviceButton = {
-                        navigateTo(Configuration.OnMyDevice)
+                        navigateTo(Configuration.Downloads.OnMyDevice)
                     },
                     bookDao = inject<BookDatabase>().value.bookDao()
                 )
@@ -131,18 +186,10 @@ class RootComponent(
                 SettingsComponent(context)
             )
 
-            is Configuration.BookView -> BookView(
-                BookViewComponent(
-                    context,
-                    config.bookId,
-                    onBack = {
-                        goBack()
-                    },
-                    bookDao = inject<BookDatabase>().value.bookDao(),
-                ),
-            )
+            // REMOVED: The problematic BookView configuration that was causing issues
+            // Now we navigate directly to specific book view types
 
-            Configuration.FinishedBooks -> FinishedBooks(
+            Configuration.Reading.FinishedBooks -> FinishedBooks(
                 FinishedBooksComponent(
                     context,
                     inject<BookDatabase>().value.bookDao(),
@@ -150,12 +197,13 @@ class RootComponent(
                         goBack()
                     },
                     onBookClicked = { id ->
-                        navigateTo(Configuration.BookView(id))
+                        // Use the new helper method instead of the problematic BookView
+                        navigateToBookView(id)
                     },
                 )
             )
 
-            Configuration.OnMyDevice -> {
+            Configuration.Downloads.OnMyDevice -> {
                 OnMyDevice(
                     OnMyDeviceComponent(
                         context,
@@ -164,13 +212,14 @@ class RootComponent(
                         },
                         bookDao = inject<BookDatabase>().value.bookDao(),
                         viewBook = { id ->
-                            navigateTo(Configuration.BookView(id))
+                            // Use the new helper method instead of the problematic BookView
+                            navigateToBookView(id)
                         }
                     )
                 )
             }
 
-            is Configuration.ReadingEBookView -> {
+            is Configuration.BookView.EBookView.ReadingEBookView -> {
                 ReadingEBookView(
                     ReadingEBookComponent(
                         context,
@@ -180,15 +229,27 @@ class RootComponent(
                 )
             }
 
-            is Configuration.EBookView -> {
+            is Configuration.BookView.EBookView -> {
                 EBookView(
                     EBookViewComponent(
                         context,
                         config.bookId,
-                        inject<BookDatabase>().value.bookDao()
+                        inject<BookDatabase>().value.bookDao(),
+                        readBook = { id ->
+                            Logger.e { "Reading book with id: $id" }
+                            navigateTo(Configuration.BookView.EBookView.ReadingEBookView(id))
+                        }
                     )
                 )
             }
+
+            is Configuration.BookView.ComicView -> ComicView(
+                ComicInfoComponent(
+                    context,
+                    config.bookId,
+                    bookDao = inject<BookDatabase>().value.bookDao()
+                )
+            )
         }
 
         return result
@@ -200,23 +261,29 @@ class RootComponent(
         data class Downloads(val component: DownloadsComponent) : Child()
         data class Search(val component: SearchComponent) : Child()
         data class Settings(val component: SettingsComponent) : Child()
-        data class BookView(val component: BookViewComponent) : Child()
         data class FinishedBooks(val component: FinishedBooksComponent) : Child()
         data class OnMyDevice(val component: OnMyDeviceComponent) : Child()
         data class ReadingEBookView(val component: ReadingEBookComponent) : Child()
         data class EBookView(val component: EBookViewComponent) : Child()
+        data class ComicView(val component: ComicInfoComponent) : Child()
     }
 
     @Serializable
     sealed interface Configuration {
         @Serializable
-        data object Reading : Configuration
+        data object Reading : Configuration {
+            @Serializable
+            data object FinishedBooks : Configuration
+        }
 
         @Serializable
         data object Library : Configuration
 
         @Serializable
-        data object Downloads : Configuration
+        data object Downloads : Configuration {
+            @Serializable
+            data object OnMyDevice : Configuration
+        }
 
         @Serializable
         data object Search : Configuration
@@ -225,18 +292,19 @@ class RootComponent(
         data object Settings : Configuration
 
         @Serializable
-        data class BookView(val bookId: String) : Configuration
+        sealed interface BookView : Configuration {
 
-        @Serializable
-        data object FinishedBooks : Configuration
+            @Serializable
+            data class EBookView(val bookId: String) : BookView {
 
-        @Serializable
-        data object OnMyDevice : Configuration
+                @Serializable
+                data class ReadingEBookView(val bookId: String) : BookView
 
-        @Serializable
-        data class ReadingEBookView(val bookId: String) : Configuration
+            }
 
-        @Serializable
-        data class EBookView(val bookId: String) : Configuration
+            @Serializable
+            data class ComicView(val bookId: String) : BookView
+
+        }
     }
 }

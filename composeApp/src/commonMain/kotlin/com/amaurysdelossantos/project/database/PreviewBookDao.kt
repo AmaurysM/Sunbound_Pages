@@ -224,8 +224,8 @@ class PreviewBookDao : BookDao {
         }
     }
 
-    override suspend fun hardDeleteBook(book: Book) {
-        sampleBooks.remove(book.id)
+    override suspend fun hardDeleteBook(bookId: String) {
+        sampleBooks.remove(bookId)
     }
 
     // Complex queries with relations (simplified for preview)

@@ -46,6 +46,10 @@ actual class SharedDocument(private val contentResolver: ContentResolver, privat
         }
     }
 
+    actual fun getFilePath(): String? {
+        return uri.path.toString()
+    }
+
     actual fun fileName(): String? {
         var fileName: String? = null
         val cursor = contentResolver.query(uri, null, null, null, null)
