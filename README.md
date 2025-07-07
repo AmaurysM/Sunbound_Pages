@@ -1,26 +1,48 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop.
+# ☀️ Sunship
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-    - `commonMain` is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the
-      folder name.
-      For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      `iosMain` would be the right folder for such calls.
+**Sunship** is a powerful, modern, cross-platform book reading app built with Kotlin Multiplatform (KMP). It supports a wide range of file formats—from eBooks and audiobooks to images and comic archives—allowing users to enjoy content however they choose. Sunship offers seamless reading, listening, and viewing experiences, all wrapped in a clean, solar-inspired UI.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for
-  your project.
+---
 
-Learn more
-about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+## Future 🌟 Features
 
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack
-channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them
-on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+### 📖 **Universal Reader**
+Sunship supports **text**, **audio**, and **visual** formats:
+- **Text Formats:** EPUB, PDF, MOBI, AZW, AZW3, TXT, RTF, DOC, DOCX
+- **Audio Formats:** MP3, AAC, M4A, M4B, OGG, FLAC, WAV
+- **Image & Comic Formats:** CBZ, CBR, CB7, CBT, JPG, JPEG, PNG, GIF, WEBP, BMP, WEBTOON
 
-You can open the web application by running the `:composeApp:wasmJsBrowserDevelopmentRun` Gradle
-task.
+### ⚡️ **Fast & Offline**
+- Read or listen to your files without needing an internet connection.
+- Smooth performance with efficient memory use.
+
+### 📚 **Rich EPUB Support**
+- Full chapter navigation
+- Embedded metadata (title, author, cover image)
+- HTML-based content rendering
+
+### 🎧 **Audiobook Playback**
+- Custom audio player with seek and playback speed control
+- Resume from where you left off
+
+### 🖼️ **Comic & Image Viewer**
+- Pinch-to-zoom
+- Page-by-page and vertical scrolling modes
+
+### 🌙 **Modern Design**
+- Material 3 / SwiftUI-compliant UIs
+- Minimalist, distraction-free reading
+
+---
+
+## 🛠️ Tech Stack
+
+| Platform     | Technology                         |
+|--------------|------------------------------------|
+| **Shared**   | Kotlin Multiplatform (KMP)   |
+| **Android**  | Jetpack Compose, Coil, MediaPlayer |
+| **iOS**      | SwiftUI, AVFoundation, Readium SDK |
+| **Desktop**  | Compose Multiplatform (Planned)    |
+| **Backend**  | None (All content is local for now) |
+
+
