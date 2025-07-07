@@ -107,6 +107,8 @@ class ReadingEBookComponent(
     private val _loadingError = MutableStateFlow<String?>(null)
     val loadingError: StateFlow<String?> = _loadingError
 
+    var isPDF by mutableStateOf(false)
+
     // UI state
     var showSettings by mutableStateOf(false)
     var showSystemUI by mutableStateOf(true)
@@ -212,7 +214,20 @@ class ReadingEBookComponent(
                 }
 
                 BookFormat.PDF -> {
-                    _bookContent.value = "PDF format support is coming soon.\n\nWe're working on adding PDF reading capabilities to provide you with the best reading experience."
+//                    if (book.filePath.isBlank()) {
+//                        _loadingError.value = "Invalid file path"
+//                        return
+//                    }
+//                    val documentUri = remember { book.filePath }
+//                    DocumentView(
+//                        documentUri = documentUri,
+//                        modifier = Modifier
+//                            .height(100.dp)
+//                            .padding(16.dp)
+//                    )
+
+                    //isPDF = true
+                    //_bookContent.value = "PDF format support is coming soon.\n\nWe're working on adding PDF reading capabilities to provide you with the best reading experience."
                 }
 
                 BookFormat.EPUB -> {
@@ -292,6 +307,7 @@ class ReadingEBookComponent(
         coroutineScope.launch {
             val progress = _readingProgress.value
             Logger.d { "Saving bookmark at ${(progress * 100).toInt()}%" }
+
             // Here you could save bookmark to database
         }
     }

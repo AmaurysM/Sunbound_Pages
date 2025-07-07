@@ -382,4 +382,12 @@ class PreviewBookDao : BookDao {
     override fun getFinishedBooks(): Flow<List<Book>> {
         return getBooksByStatus(ReadingStatus.COMPLETED)
     }
+
+    override suspend fun updateBookLastReadPosition(bookId: String, position: Int) {
+        sampleBooks[bookId]?.let { book ->
+            sampleBooks[bookId] = book.copy(lastReadPosition = position)
+        }
+    }
+
+
 }

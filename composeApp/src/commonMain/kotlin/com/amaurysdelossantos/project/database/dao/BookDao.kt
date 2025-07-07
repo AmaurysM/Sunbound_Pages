@@ -108,5 +108,7 @@ interface BookDao {
     @Query("SELECT * FROM books WHERE readingStatus = 'COMPLETED'")
     fun getFinishedBooks(): Flow<List<Book>>
 
+    @Query("UPDATE books SET lastReadPosition = :position WHERE id = :bookId")
+    suspend fun updateBookLastReadPosition(bookId: String, position: Int)
 
 }

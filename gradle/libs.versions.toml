@@ -13,6 +13,7 @@ androidx-material = "1.12.0"
 androidx-constraintlayout = "2.2.1"
 androidx-test-junit = "1.2.1"
 androidx-espresso-core = "3.6.1"
+
 javaUuidGenerator = "5.1.0"
 kamelImage = "0.7.0"
 koinAndroid = "4.1.0"
@@ -29,8 +30,13 @@ composeHotReload = "1.0.0-alpha10"
 kotlinx-coroutines = "1.10.2"
 materialIconsCore = "1.7.3"
 materialIconsExtended = "1.7.8"
+nutrient = "10.3.0"
+readiumAdapterPdfiumDocument = "3.1.1"
+readiumShared = "3.1.1"
+readiumStreamer = "2.3.0"
 room = "2.7.2"
 ksp = "2.1.21-2.0.2"
+slf4jAndroid = "1.7.25"
 sqlite = "2.5.2"
 koin = "4.0.0"
 sqliteJdbcVersion = "3.43.0.0"
@@ -60,6 +66,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-extensionsComposeJetbrains = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
 
+#kotlin-toolkit-readium-streamer = { module = "org.readium.kotlin-toolkit:readium-streamer", version.ref = "readiumKotlin" }
 kotlin-utils-kapt = { module = "com.github.manosbatsis.kotlin-utils:kotlin-utils-kapt", version.ref = "kotlinUtilsKapt" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
@@ -68,8 +75,24 @@ kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-s
 
 # Room dependencies - use only these, not the platform-specific ones
 material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
+nutrient = { module = "io.nutrient:nutrient", version.ref = "nutrient" }
+
+
+#Readium dependencies
+
+readium-adapter-pdfium-document = { module = "org.readium.kotlin-toolkit:readium-adapter-pdfium-document", version.ref = "readiumAdapterPdfiumDocument" }
+readium-lcp = { module = "org.readium.kotlin-toolkit:readium-lcp", version.ref = "readiumShared" }
+readium-opds = { module = "org.readium.kotlin-toolkit:readium-opds", version.ref = "readiumShared" }
+
+readium-navigator = { module = "org.readium.kotlin-toolkit:readium-navigator-media-tts", version.ref = "readiumShared" }
+#readium-parser-epub = { module = "org.readium.kotlin-toolkit:readium-parser-epub", version.ref = "readiumShared" }
+readium-shared = { module = "org.readium.kotlin-toolkit:readium-shared", version.ref = "readiumShared" }
+readium-streamer = { module = "org.readium.kotlin-toolkit:readium-streamer", version.ref = "readiumShared" }
+
+
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+slf4j-android = { module = "org.slf4j:slf4j-android", version.ref = "slf4jAndroid" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
 # Koin dependencies

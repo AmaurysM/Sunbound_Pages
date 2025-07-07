@@ -4,8 +4,6 @@ import co.touchlab.kermit.Logger
 import okio.FileSystem
 import okio.Path.Companion.toPath
 
-expect val systemFileSystem: FileSystem
-
 fun readTextFile(filePath: String): String? {
     return try {
         val path = filePath.toPath()

@@ -24,6 +24,8 @@ data class Book @OptIn(ExperimentalUuidApi::class) constructor(
     var format: BookFormat,
     var mediaType: MediaType,
 
+    var lastReadPosition: Int = 0,
+
     // File information
     var filePath: String,
     var fileSize: Long? = null,

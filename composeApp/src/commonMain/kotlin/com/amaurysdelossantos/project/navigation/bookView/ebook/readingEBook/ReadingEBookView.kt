@@ -69,7 +69,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.amaurysdelossantos.project.database.PreviewBookDao
+import com.amaurysdelossantos.project.database.enums.BookFormat
 import com.amaurysdelossantos.project.model.Book
+import com.amaurysdelossantos.project.util.toMediaType
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import kotlinx.datetime.Clock
@@ -103,6 +105,7 @@ fun ReadingEBookView(
 
     // Auto-hide UI after tap
     var lastTapTime by remember { mutableStateOf(0L) }
+    //val documentUri = remember { book?.filePath ?: "" }
 
     LaunchedEffect(lastTapTime) {
         if (lastTapTime > 0) {
@@ -126,7 +129,6 @@ fun ReadingEBookView(
                 )
             }
     ) {
-        // Main content
         when {
             isLoading -> {
                 LoadingView(theme)
@@ -140,22 +142,52 @@ fun ReadingEBookView(
                 )
             }
 
-            content?.contains("support") == true -> {
-                UnsupportedFormatView(
-                    content = content!!,
-                    theme = theme,
-                    book = book
-                )
-            }
+//            when(book?.format){
+//                BookFormat.TXT -> true
+//                BookFormat.PDF -> true
+//                BookFormat.EPUB -> true
+//                else -> false
+//            }
+//            content?.contains("support") == true -> {
+//                UnsupportedFormatView(
+//                    content = content!!,
+//                    theme = theme,
+//                    book = book
+//                )
+//            }
 
             else -> {
-                BookContentView(
-                    content = content,
-                    settings = settings,
-                    theme = theme,
-                    lazyListState = component.lazyListState,
-                    innerPadding = innerPadding
-                )
+
+
+
+//                when(book?.format){
+//                    BookFormat.TXT -> BookContentView(
+//                        content = content,
+//                        settings = settings,
+//                        theme = theme,
+//                        lazyListState = component.lazyListState,
+//                        innerPadding = innerPadding
+//                    )
+//                    BookFormat.PDF -> DocumentView(
+//                        documentUri = book!!.filePath,
+//                        modifier = Modifier
+//                            .height(100.dp)
+//                            .padding(16.dp)
+//                    )
+//                    BookFormat.EPUB -> true
+//                    else -> false
+//                }
+//                BookContentView(
+//                    content = content,
+//                    settings = settings,
+//                    theme = theme,
+//                    lazyListState = component.lazyListState,
+//                    innerPadding = innerPadding
+//                )
+//                EBookContentView(
+//                    filePath = book!!.filePath,
+//                    format = book!!.format.toMediaType(),
+//                )
             }
         }
 
@@ -209,13 +241,6 @@ fun ReadingEBookView(
                         )
                     }
 
-                    IconButton(onClick = component::toggleAutoScroll) {
-                        Icon(
-                            imageVector = if (settings.autoScroll) Icons.Default.Stop else Icons.Default.PlayArrow,
-                            contentDescription = if (settings.autoScroll) "Stop Auto-scroll" else "Start Auto-scroll",
-                            tint = theme.textColor
-                        )
-                    }
 
                     IconButton(onClick = { component.showSettings = !component.showSettings }) {
                         Icon(
